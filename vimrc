@@ -6,8 +6,10 @@ set softtabstop=2
 set shiftwidth=2
 set expandtab
 
+" Theme
 set background=dark
 colorscheme hybrid_material
+let g:airline_theme = "hybrid"
 
 " Ctrlp
 map <C-r> :CtrlPBufTag<CR>
