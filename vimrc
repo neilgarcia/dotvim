@@ -29,6 +29,10 @@ if executable('ag')
 
 endif
 
-"Nerdtree
+" Nerdtree
 map <leader>e :NERDTreeFind<CR>
 map <leader>t :NERDTreeToggle<CR>
+
+" Vim slim
+syntax enable
+filetype plugin indent on
