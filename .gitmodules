@@ -19,3 +19,6 @@
 [submodule "bundle/materialize"]
 	path = bundle/materialize
 	url = https://github.com/kristijanhusak/vim-hybrid-material.git
+[submodule "bundle/ctrlp"]
+	path = bundle/ctrlp
+	url = https://github.com/ctrlpvim/ctrlp.vim.git
