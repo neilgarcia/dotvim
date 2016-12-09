@@ -10,3 +10,7 @@ Create Symlinks
 Install Silver Searcher
 
 	apt-get install silversearcher-ag
+
+Install Ack
+        
+        sudo apt-get install ack-grep 
