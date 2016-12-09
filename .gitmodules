@@ -16,3 +16,6 @@
 [submodule "bundle/ack"]
 	path = bundle/ack
 	url = https://github.com/mileszs/ack.vim.git
+[submodule "bundle/materialize"]
+	path = bundle/materialize
+	url = https://github.com/kristijanhusak/vim-hybrid-material.git

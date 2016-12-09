@@ -7,7 +7,7 @@ set shiftwidth=2
 set expandtab
 
 set background=dark
-colorscheme seti
+colorscheme hybrid_material
 
 " Ack.vim
 nnoremap <leader>a :Ack 
