@@ -10,3 +10,9 @@
 [submodule "bundle/seti"]
 	path = bundle/seti
 	url = https://github.com/trusktr/seti.vim.git
+[submodule "bundle/ack.vim"]
+	path = bundle/ack.vim
+	url = https://github.com/mileszs/ack.vim.git
+[submodule "bundle/ack"]
+	path = bundle/ack
+	url = https://github.com/mileszs/ack.vim.git
