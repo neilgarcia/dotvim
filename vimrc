@@ -5,7 +5,7 @@ set number
 set softtabstop=2
 set shiftwidth=2
 set expandtab
-
+inoremap <c-s> <c-o>:Update<CR><CR>
 " Theme
 set background=dark
 set t_Co=256
@@ -56,3 +56,7 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
+" Maps save to Ctrl S
+noremap <silent> <C-S>          :update<CR>
+vnoremap <silent> <C-S>         <C-C>:update<CR>
+inoremap <silent> <C-S>         <C-O>:update<CR>
