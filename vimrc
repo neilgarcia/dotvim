@@ -29,4 +29,6 @@ if executable('ag')
 
 endif
 
-nnoremap <leader>t :NERDTreeToggle<CR>
+"Nerdtree
+map <leader>e :NERDTreeFind<CR>
+map <leader>t :NERDTreeToggle<CR>
