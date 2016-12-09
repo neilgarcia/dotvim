@@ -9,6 +9,9 @@ set expandtab
 set background=dark
 colorscheme hybrid_material
 
+" Ctrlp
+map <C-r> :CtrlPBufTag<CR>
+
 " Ack.vim
 nnoremap <leader>a :Ack 
 if executable('ag')
@@ -25,3 +28,5 @@ if executable('ag')
   let g:ctrlp_use_caching = 0
 
 endif
+
+nnoremap <leader>t :NERDTreeToggle<CR>
