@@ -5,10 +5,10 @@ set number
 set softtabstop=2
 set shiftwidth=2
 set expandtab
+set tags=./tags
 inoremap <c-s> <c-o>:Update<CR><CR>
 " Theme
 set background=dark
-set t_Co=256
 colorscheme hybrid_material
 let g:airline_theme = "hybrid"
 
