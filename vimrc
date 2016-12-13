@@ -1,11 +1,21 @@
 execute pathogen#infect()
 
 let mapleader = ","
+
+" Edit and source vimrc
+map <leader>vr :sp $MYVIMRC<CR>
+map <leader>so :source $MYVIMRC<CR>
+
+" Basic Configs
 set number
+set ruler
 set softtabstop=2
 set shiftwidth=2
 set expandtab
+set autoindent
 set tags=./tags
+set backupdir=~/.tmp
+set directory=~/.tmp " Move tmp and swp files on tmp
 inoremap <c-s> <c-o>:Update<CR><CR>
 " Theme
 set background=dark
