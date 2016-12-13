@@ -67,3 +67,6 @@
 [submodule "bundle/zoomwin-vim"]
 	path = bundle/zoomwin-vim
 	url = https://github.com/drn/zoomwin-vim.git
+[submodule "bundle/seti"]
+	path = bundle/seti
+	url = https://github.com/kostacoffee/seti.vim.git

@@ -9,7 +9,7 @@ set tags=./tags
 inoremap <c-s> <c-o>:Update<CR><CR>
 " Theme
 set background=dark
-colorscheme hybrid_material
+colorscheme seti
 let g:airline_theme = "hybrid"
 
 " Ctrlp
