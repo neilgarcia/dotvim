@@ -67,3 +67,9 @@
 [submodule "bundle/sytastic"]
 	path = bundle/sytastic
 	url = https://github.com/vim-syntastic/syntastic.git
+[submodule "bundle/nerdcommenter"]
+	path = bundle/nerdcommenter
+	url = https://github.com/scrooloose/nerdcommenter.git
+[submodule "bundle/solarized"]
+	path = bundle/solarized
+	url = https://github.com/altercation/vim-colors-solarized.git
