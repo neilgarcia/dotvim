@@ -1,6 +1,9 @@
 execute pathogen#infect()
 
 let mapleader = ","
+syntax on
+filetype plugin on
+filetype plugin indent on
 
 " Edit and source vimrc
 map <leader>vr :sp $MYVIMRC<CR>
@@ -45,10 +48,6 @@ endif
 " Nerdtree
 map <leader>e :NERDTreeFind<CR>
 map <leader>t :NERDTreeToggle<CR>
-
-" Vim slim
-syntax enable
-filetype plugin indent on
 
 " Easier split navigations
 nnoremap <C-J> <C-W><C-J>
