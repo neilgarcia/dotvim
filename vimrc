@@ -40,16 +40,6 @@ map <leader>t :NERDTreeToggle<CR>
 syntax enable
 filetype plugin indent on
 
-" Syntastic
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-
 " Easier split navigations
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
@@ -60,3 +50,7 @@ nnoremap <C-H> <C-W><C-H>
 noremap <silent> <C-S>          :update<CR>
 vnoremap <silent> <C-S>         <C-C>:update<CR>
 inoremap <silent> <C-S>         <C-O>:update<CR>
+
+" Copy file path easily for unit testing
+set clipboard=unnamed
+map <leader>cfp :!echo "%:p" \| pbcopy<CR><CR>
