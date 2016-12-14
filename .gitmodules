@@ -1,12 +1,6 @@
 [submodule "bundle/fugitive"]
 	path = bundle/fugitive
 	url = https://github.com/tpope/vim-fugitive.git
-[submodule "/home/neilgarcia/.vim/bundle/seti"]
-	path = /home/neilgarcia/.vim/bundle/seti
-	url = https://github.com/trusktr/seti.vim.git
-[submodule "bundle/bundle/seti"]
-	path = bundle/bundle/seti
-	url = https://github.com/trusktr/seti.vim.git
 [submodule "bundle/ack.vim"]
 	path = bundle/ack.vim
 	url = https://github.com/mileszs/ack.vim.git
@@ -67,3 +61,6 @@
 [submodule "bundle/solarized"]
 	path = bundle/solarized
 	url = https://github.com/altercation/vim-colors-solarized.git
+[submodule "bundle/seti"]
+	path = bundle/seti
+	url = https://github.com/kostacoffee/seti.vim.git
