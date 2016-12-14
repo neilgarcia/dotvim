@@ -24,7 +24,8 @@ set backupdir=~/.tmp
 set directory=~/.tmp " Move tmp and swp files on tmp
 inoremap <c-s> <c-o>:Update<CR><CR>
 " Theme
-set background=light
+set background=dark
+set t_Co=256
 colorscheme seti
 let g:airline_theme = "hybrid"
 
