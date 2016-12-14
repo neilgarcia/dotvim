@@ -23,9 +23,9 @@ set tags=./tags
 set backupdir=~/.tmp
 set directory=~/.tmp " Move tmp and swp files on tmp
 inoremap <c-s> <c-o>:Update<CR><CR>
+
 " Theme
 set background=dark
-set t_Co=256
 colorscheme seti
 let g:airline_theme = "hybrid"
 
@@ -76,7 +76,7 @@ set statusline+=%*
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
 
 " Close buffer
 map <leader>q :bd<CR>
-let g:syntastic_check_on_wq = 0
