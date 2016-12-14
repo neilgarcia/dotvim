@@ -15,6 +15,8 @@ set number
 set ruler
 set softtabstop=2
 set shiftwidth=2
+set hlsearch
+set incsearch
 set expandtab
 set autoindent
 set tags=./tags
