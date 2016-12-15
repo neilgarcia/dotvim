@@ -64,3 +64,6 @@
 [submodule "bundle/seti"]
 	path = bundle/seti
 	url = https://github.com/kostacoffee/seti.vim.git
+[submodule "bundle/vim-hybrid"]
+	path = bundle/vim-hybrid
+	url = https://github.com/w0ng/vim-hybrid.git
