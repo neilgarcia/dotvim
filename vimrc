@@ -23,9 +23,15 @@ set tags=./tags
 set backupdir=~/.tmp
 set directory=~/.tmp " Move tmp and swp files on tmp
 inoremap <c-s> <c-o>:Update<CR><CR>
+
+" Gui Running
+if has("gui_running")
+  set fu
+endif
+
 " Theme
-set background=light
-colorscheme seti
+set background=dark
+colorscheme hybrid_material
 let g:airline_theme = "hybrid"
 
 " Ctrlp
@@ -79,3 +85,6 @@ let g:syntastic_check_on_open = 0
 " Close buffer
 map <leader>q :bd<CR>
 let g:syntastic_check_on_wq = 0
+
+" Git
+map <leader>gbl :Gblame<CR>
