@@ -26,12 +26,13 @@ inoremap <c-s> <c-o>:Update<CR><CR>
 
 " Gui Running
 if has("gui_running")
-  set fu
+  map <silent> <F11> :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
 endif
 
 " Theme
 set background=dark
-colorscheme hybrid_material
+let g:hybrid_custom_term_colors = 1
+colorscheme hybrid
 let g:airline_theme = "hybrid"
 
 " Ctrlp
