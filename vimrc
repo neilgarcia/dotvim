@@ -28,7 +28,12 @@ inoremap <c-s> <c-o>:Update<CR><CR>
 
 " Gui Running
 if has("gui_running")
-  set fu
+  if has("gui_macvim")
+    set fu
+  else
+    map <silent> <F11>
+          \    :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
+  endif
 endif
 
 " Theme

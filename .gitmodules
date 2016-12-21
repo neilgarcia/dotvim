@@ -73,6 +73,7 @@
 [submodule "bundle/molokai"]
 	path = bundle/molokai
 	url = https://github.com/MaxMEllon/molokai.git
+  ignore = dirty
 [submodule "bundle/vim-buffkill"]
         ignore = dirty
 	path = bundle/vim-buffkill
