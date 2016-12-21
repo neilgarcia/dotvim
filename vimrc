@@ -9,6 +9,9 @@ filetype plugin indent on
 map <leader>vr :vsp $MYVIMRC<CR>
 map <leader>so :source $MYVIMRC<CR>
 
+" Formats entire file
+nnoremap <leader>fef :normal! gg=G``<CR>
+
 " Basic Configs
 set number
 set ruler
