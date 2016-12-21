@@ -73,9 +73,6 @@
 [submodule "bundle/molokai"]
 	path = bundle/molokai
 	url = https://github.com/MaxMEllon/molokai.git
-[submodule "bundle/vim-buftabline"]
-	path = bundle/vim-buftabline
-	url = https://github.com/ap/vim-buftabline.git
 [submodule "bundle/vim-buffkill"]
 	path = bundle/vim-buffkill
 	url = https://github.com/qpkorr/vim-bufkill.git
