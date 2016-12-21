@@ -26,16 +26,12 @@ inoremap <c-s> <c-o>:Update<CR><CR>
 " Gui Running
 if has("gui_running")
   set fu
-
-  " Buftabline
-  set hidden
-  nnoremap <C-Tab> :bnext<CR>
-  nnoremap <C-S-Tab> :bprev<CR>
 endif
 
 " Theme
 set background=dark
 let g:hybrid_custom_term_colors = 1
+" let g:hybrid_reduced_contrast = 1 " Remove this line if using the default palette.
 colorscheme hybrid
 let g:airline_theme = "hybrid"
 
@@ -92,4 +88,3 @@ map <leader>q :BD<CR>
 
 " Git
 map <leader>gbl :Gblame<CR>
-
