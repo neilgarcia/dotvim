@@ -67,3 +67,15 @@
 [submodule "bundle/vim-hybrid"]
 	path = bundle/vim-hybrid
 	url = https://github.com/w0ng/vim-hybrid.git
+[submodule "bundle/vim-monokai"]
+	path = bundle/vim-monokai
+	url = https://github.com/crusoexia/vim-monokai.git
+[submodule "bundle/molokai"]
+	path = bundle/molokai
+	url = https://github.com/MaxMEllon/molokai.git
+[submodule "bundle/vim-buftabline"]
+	path = bundle/vim-buftabline
+	url = https://github.com/ap/vim-buftabline.git
+[submodule "bundle/vim-buffkill"]
+	path = bundle/vim-buffkill
+	url = https://github.com/qpkorr/vim-bufkill.git

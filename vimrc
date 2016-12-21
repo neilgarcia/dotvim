@@ -4,10 +4,9 @@ Helptags " Allow calling :help for plugins installed using pathogen
 let mapleader = ","
 syntax on
 filetype plugin on
-filetype plugin indent on
-
+filetype plugin indent on 
 " Edit and source vimrc
-map <leader>vr :sp $MYVIMRC<CR>
+map <leader>vr :vsp $MYVIMRC<CR>
 map <leader>so :source $MYVIMRC<CR>
 
 " Basic Configs
@@ -26,7 +25,12 @@ inoremap <c-s> <c-o>:Update<CR><CR>
 
 " Gui Running
 if has("gui_running")
-  map <silent> <F11> :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
+  set fu
+
+  " Buftabline
+  set hidden
+  nnoremap <C-Tab> :bnext<CR>
+  nnoremap <C-S-Tab> :bprev<CR>
 endif
 
 " Theme
@@ -38,21 +42,19 @@ let g:airline_theme = "hybrid"
 " Ctrlp
 map <C-r> :CtrlPBufTag<CR>
 
-" Ack.vim
+" Ack
 nnoremap <leader>a :Ack 
-if executable('ag')
-  " Use ag over grep
-  set grepprg=ag\ --nogroup\ --nocolor
-
-  " Use ag over ack
-  let g:ackprg="ag --vimgrep"
-
-  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l --hidden --nocolor -g ""'
-
-  " ag is fast enought that CtrlP doesn't need to cache
+if executable('rg')
+  " Use ripgrep for ctrlp
+  set grepprg=rg\ --color=never
+  let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
   let g:ctrlp_use_caching = 0
 
+  " Use rg over grep
+  set grepprg=rg\ --vimgrep
+
+  " Use rg over ack
+  let g:ackprg="rg --vimgrep"
 endif
 
 " Nerdtree
@@ -83,9 +85,11 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
+let g:statline_syntastic = 0
 
 " Close buffer
-map <leader>q :bd<CR>
+map <leader>q :BD<CR>
 
 " Git
 map <leader>gbl :Gblame<CR>
+
