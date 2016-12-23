@@ -24,7 +24,12 @@ set autoindent
 set tags=./tags
 set backupdir=~/.tmp
 set directory=~/.tmp " Move tmp and swp files on tmp
-inoremap <c-s> <c-o>:Update<CR><CR>
+" allow undo after closing/reopening file
+set undofile
+set undodir=~/.vim/undodir
+
+" Ignore .git .swp .tmp
+set wildignore+=*/.git/*,*/tmp/*,*.swp
 
 " Gui Running
 if has("gui_running")
@@ -51,8 +56,9 @@ nnoremap <leader>a :Ack
 if executable('rg')
   " Use ripgrep for ctrlp
   set grepprg=rg\ --color=never
-  let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
+  let g:ctrlp_user_command = 'rg %s -u --files --color=never --glob ""'
   let g:ctrlp_use_caching = 0
+  let g:ctrlp_max_files = 0
 
   " Use rg over grep
   set grepprg=rg\ --vimgrep
@@ -96,3 +102,21 @@ map <leader>q :BD<CR>
 
 " Git
 map <leader>gbl :Gblame<CR>
+
+" Buftabline
+set hidden
+nnoremap <C-Tab> :bnext<CR>
+nnoremap <C-S-Tab> :bprev<CR>
+
+" startify
+let g:startify_session_dir = '~/.vim/sessions'
+let g:startify_session_persistence = 1
+let g:startify_relative_path = 1
+let g:startify_list_order = [
+      \ ['   Sessions:'],
+      \ 'sessions',
+      \ ['   Recent files:'],
+      \ 'files',
+      \ ['   Recent files in current directory:'],
+      \ 'dir',
+      \ ]
