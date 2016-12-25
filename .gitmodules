@@ -97,6 +97,3 @@
         ignore = dirty
 	path = bundle/ctrlp-py-matcher
 	url = https://github.com/FelikZ/ctrlp-py-matcher.git
-[submodule "bundle/fzf"]
-	path = bundle/fzf
-	url = https://github.com/junegunn/fzf.git
