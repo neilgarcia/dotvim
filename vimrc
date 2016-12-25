@@ -38,6 +38,10 @@ if has("gui_running")
   else
     map <silent> <F11>
           \    :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
+    set guioptions-=m  "menu bar
+    set guioptions-=T  "toolbar
+    set guioptions-=r  "scrollbar
+    set guioptions-=L  "scrollbar
   endif
 endif
 
@@ -54,6 +58,7 @@ map <C-r> :CtrlPBufTag<CR>
 " Ack
 nnoremap <leader>a :Ack 
 if executable('rg')
+  let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
   " Use ripgrep for ctrlp
   set grepprg=rg\ --color=never
   let g:ctrlp_user_command = 'rg %s -u --files --color=never --glob ""'
@@ -120,3 +125,5 @@ let g:startify_list_order = [
       \ ['   Recent files in current directory:'],
       \ 'dir',
       \ ]
+
+
