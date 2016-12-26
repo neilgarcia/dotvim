@@ -14,24 +14,82 @@ map <leader>so :source $MYVIMRC<CR>
 nnoremap <leader>fef :normal! gg=G``<CR>
 
 " Basic Configs
-set number
-set relativenumber
+set number            " Show line number
+set relativenumber    " Show relative number
 set ruler
-set softtabstop=2
-set shiftwidth=2
-set hlsearch
-set incsearch
-set expandtab
-set autoindent
-set tags=./tags
-set backupdir=~/.tmp
-set directory=~/.tmp " Move tmp and swp files on tmp
-" allow undo after closing/reopening file
+
+
+""
+"" Undo history
+""
 set undofile
 set undodir=~/.vim/undodir
 
-" Ignore .git .swp .tmp
-set wildignore+=*/.git/*,*/tmp/*,*.swp
+
+""
+"" Whitespace
+""
+
+set nowrap                        " don't wrap lines
+set tabstop=2                     " a tab is two spaces
+set shiftwidth=2                  " an autoindent (with <<) is two spaces
+set expandtab                     " use spaces, not tabs
+set list                          " Show invisible characters
+set backspace=indent,eol,start    " backspace through everything in insert mode
+
+" List chars
+set listchars=""                  " Reset the listchars
+set listchars=tab:\ \             " a tab should display as "  ", trailing whitespace as "."
+set listchars+=trail:.            " show trailing spaces as dots
+set listchars+=extends:>          " The character to show in the last column when wrap is
+                                  " off and the line continues beyond the right of the screen
+set listchars+=precedes:<         " The character to show in the last column when wrap is
+                                  " off and the line continues beyond the left of the screen
+
+
+
+""
+"" Searching
+""
+
+set hlsearch    " highlight matches
+set incsearch   " incremental searching
+set ignorecase  " searches are case insensitive...
+set smartcase   " ... unless they contain at least one capital letter
+
+
+""
+"" Wild settings
+""
+
+" Disable output and VCS files
+set wildignore+=*.o,*.out,*.obj,.git,*.rbc,*.rbo,*.class,.svn,*.gem
+
+" Disable archive files
+set wildignore+=*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz
+
+" Ignore bundler and sass cache
+set wildignore+=*/vendor/gems/*,*/vendor/cache/*,*/.bundle/*,*/.sass-cache/*
+
+" Ignore librarian-chef, vagrant, test-kitchen and Berkshelf cache
+set wildignore+=*/tmp/librarian/*,*/.vagrant/*,*/.kitchen/*,*/vendor/cookbooks/*
+
+" Ignore rails temporary asset caches
+set wildignore+=*/tmp/cache/assets/*/sprockets/*,*/tmp/cache/assets/*/sass/*
+
+" Disable temp and backup files
+set wildignore+=*.swp,*~,._*
+
+""
+"" Backup and swp files
+""
+
+set backupdir=~/.tmp " Where to put backup files
+set directory=~/.tmp " Where to put swap files
+
+""
+"" User defined commands
+""
 
 " Gui Running
 if has("gui_running")
@@ -40,6 +98,8 @@ if has("gui_running")
   else
     map <silent> <F11>
           \    :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
+    
+    " Hide gvim bars
     set guioptions-=m  "menu bar
     set guioptions-=T  "toolbar
     set guioptions-=r  "scrollbar
@@ -47,15 +107,41 @@ if has("gui_running")
   endif
 endif
 
-" Theme
+" Easier split navigations
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+" Maps save to Ctrl S
+noremap <silent> <C-S>          :update<CR>
+vnoremap <silent> <C-S>         <C-C>:update<CR>
+inoremap <silent> <C-S>         <C-O>:update<CR>
+
+" Copy file path easily for unit testing
+set clipboard=unnamed
+map <leader>cfp :!echo "%:p" \| pbcopy<CR><CR>
+
+" Zoom pane (<C-w>= to revert)
+map <leader>fs <C-w>\| <bar> <C-w>_
+
+""
+"" Theme
+""
+
 set background=dark
 let g:hybrid_custom_term_colors = 1
 let g:hybrid_reduced_contrast = 1 " Remove this line if using the default palette.
 colorscheme hybrid
 let g:airline_theme = "hybrid"
 
+""
+"" Plugins
+""
+
 " Ctrlp
 map <C-r> :CtrlPBufTag<CR>
+set tags=./tags
 
 " Ack
 nnoremap <leader>a :Ack 
@@ -78,20 +164,6 @@ endif
 map <leader>e :NERDTreeFind<CR>
 map <leader>t :NERDTreeToggle<CR>
 
-" Easier split navigations
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
-
-" Maps save to Ctrl S
-noremap <silent> <C-S>          :update<CR>
-vnoremap <silent> <C-S>         <C-C>:update<CR>
-inoremap <silent> <C-S>         <C-O>:update<CR>
-
-" Copy file path easily for unit testing
-set clipboard=unnamed
-map <leader>cfp :!echo "%:p" \| pbcopy<CR><CR>
 
 " Syntastic
 set statusline+=%#warningmsg#
@@ -128,8 +200,3 @@ let g:startify_list_order = [
       \ 'dir',
       \ ]
 
-" Zoom pane (<C-w>= to revert)
-map <leader>fs <C-w>\| <bar> <C-w>_
-
-" FZF
-set rtp+=~/.fzf
