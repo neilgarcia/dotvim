@@ -1,4 +1,5 @@
 execute pathogen#infect()
+
 Helptags " Allow calling :help for plugins installed using pathogen
 
 let mapleader = ","
@@ -14,6 +15,7 @@ nnoremap <leader>fef :normal! gg=G``<CR>
 
 " Basic Configs
 set number
+set relativenumber
 set ruler
 set softtabstop=2
 set shiftwidth=2
@@ -69,7 +71,7 @@ if executable('rg')
   set grepprg=rg\ --vimgrep
 
   " Use rg over ack
-  let g:ackprg="rg --vimgrep"
+  let g:ackprg="rg --vimgrep --no-heading"
 endif
 
 " Nerdtree
@@ -126,4 +128,8 @@ let g:startify_list_order = [
       \ 'dir',
       \ ]
 
+" Zoom pane (<C-w>= to revert)
+map <leader>fs <C-w>\| <bar> <C-w>_
 
+" FZF
+set rtp+=~/.fzf
