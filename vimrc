@@ -123,7 +123,10 @@ set clipboard=unnamed
 map <leader>cfp :!echo "%:p" \| pbcopy<CR><CR>
 
 " Zoom pane (<C-w>= to revert)
-map <leader>fs <C-w>\| <bar> <C-w>_
+map <C-w>o <C-w>\| <bar> <C-w>_
+
+" Remove highlight
+map <leader>h :nohlsearch<CR>
 
 ""
 "" Theme
