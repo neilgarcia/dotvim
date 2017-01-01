@@ -108,3 +108,6 @@
 [submodule "bundle/vim-test"]
 	path = bundle/vim-test
 	url = https://github.com/janko-m/vim-test.git
+[submodule "bundle/neoterm"]
+	path = bundle/neoterm
+	url = https://github.com/kassio/neoterm.git
