@@ -5,7 +5,7 @@ Helptags " Allow calling :help for plugins installed using pathogen
 let mapleader = ","
 syntax on
 filetype plugin on
-filetype plugin indent on 
+filetype plugin indent on
 " Edit and source vimrc
 map <leader>vr :vsp $MYVIMRC<CR>
 map <leader>so :source $MYVIMRC<CR>
@@ -22,6 +22,7 @@ set ruler
 ""
 "" Undo history
 ""
+
 set undofile
 set undodir=~/.vim/undodir
 
@@ -42,9 +43,9 @@ set listchars=""                  " Reset the listchars
 set listchars=tab:\ \             " a tab should display as "  ", trailing whitespace as "."
 set listchars+=trail:.            " show trailing spaces as dots
 set listchars+=extends:>          " The character to show in the last column when wrap is
-                                  " off and the line continues beyond the right of the screen
+" off and the line continues beyond the right of the screen
 set listchars+=precedes:<         " The character to show in the last column when wrap is
-                                  " off and the line continues beyond the left of the screen
+" off and the line continues beyond the left of the screen
 
 
 
@@ -98,7 +99,7 @@ if has("gui_running")
   else
     map <silent> <F11>
           \    :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
-    
+
     " Hide gvim bars
     set guioptions-=m  "menu bar
     set guioptions-=T  "toolbar
@@ -143,11 +144,16 @@ let g:airline_theme = "hybrid"
 ""
 
 " Ctrlp
-map <C-r> :CtrlPBufTag<CR>
-set tags=./tags
+if has('nvim')
+  noremap <C-r> :BTags<CR>
+  noremap <C-p> :Files<CR>
+else
+  map <C-r> :CtrlPBufTag<CR>
+  set tags=./tags
+endif
 
 " Ack
-nnoremap <leader>a :Ack 
+nnoremap <leader>a :Ack!<Space>
 if executable('rg')
   let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
   " Use ripgrep for ctrlp
@@ -202,4 +208,8 @@ let g:startify_list_order = [
       \ ['   Recent files in current directory:'],
       \ 'dir',
       \ ]
+
+" FZF
+set rtp+=~/.fzf
+command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
 
