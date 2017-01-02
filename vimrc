@@ -1,3 +1,8 @@
+let g:pathogen_disabled = []
+if has('nvim')
+  call add(g:pathogen_disabled, 'ctrlp')
+endif
+
 execute pathogen#infect()
 
 Helptags " Allow calling :help for plugins installed using pathogen
@@ -212,4 +217,19 @@ let g:startify_list_order = [
 " FZF
 set rtp+=~/.fzf
 command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
+map <leader>ft :Find<Space>
 
+" Vim Test
+map <silent> <leader>tf :TestFile<CR>
+
+if has('nvim')
+  " run tests with :T
+  let test#strategy = "neoterm"
+
+  " vertical split instead of the default horizontal
+  let g:neoterm_position = "vertical"
+
+  " pretty much essential: by default in terminal mode, you have to press ctrl-\-n to get into normal mode
+  " ain't nobody got time for that
+  tnoremap <Esc> <C-\><C-n>
+endif
