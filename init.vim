@@ -1,1 +1,1 @@
-/home/neilgarcia/.vim/vimrc
+/Users/neilgarcia/.vim/vimrc

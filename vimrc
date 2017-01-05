@@ -1,6 +1,7 @@
 let g:pathogen_disabled = []
 if has('nvim')
   call add(g:pathogen_disabled, 'ctrlp')
+  call add(g:pathogen_disabled, 'syntastic')
 endif
 
 execute pathogen#infect()
@@ -8,6 +9,8 @@ execute pathogen#infect()
 Helptags " Allow calling :help for plugins installed using pathogen
 
 let mapleader = ","
+map <Space> ,
+
 syntax on
 filetype plugin on
 filetype plugin indent on
@@ -15,13 +18,13 @@ filetype plugin indent on
 map <leader>vr :vsp $MYVIMRC<CR>
 map <leader>so :source $MYVIMRC<CR>
 
-" Formats entire file
-nnoremap <leader>fef :normal! gg=G``<CR>
 
 " Basic Configs
 set number            " Show line number
 set relativenumber    " Show relative number
 set ruler
+set cursorline
+set cursorcolumn
 
 
 ""
@@ -97,6 +100,15 @@ set directory=~/.tmp " Where to put swap files
 "" User defined commands
 ""
 
+" Sane terminal binding
+tnoremap <Esc> <C-\><C-n>
+
+" Go to previous buffer
+map <Space><Space> <C-^>
+
+" Formats entire file
+nnoremap <leader>fef :normal! gg=G``<CR>
+
 " Gui Running
 if has("gui_running")
   if has("gui_macvim")
@@ -132,7 +144,7 @@ map <leader>cfp :!echo "%:p" \| pbcopy<CR><CR>
 map <C-w>o <C-w>\| <bar> <C-w>_
 
 " Remove highlight
-map <leader>h :nohlsearch<CR>
+map <leader>nh :nohlsearch<CR>
 
 ""
 "" Theme
@@ -154,6 +166,7 @@ colorscheme onedark           " Set the colorscheme
 let g:airline_powerline_fonts = 1
 let g:airline_theme='onedark'
 
+
 ""
 "" Plugins
 ""
@@ -173,6 +186,7 @@ if has('nvim')
 else
   nnoremap <leader>a :Ack!<Space>
 endif
+
 if executable('rg')
   let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
   " Use ripgrep for ctrlp
@@ -194,15 +208,19 @@ map <leader>t :NERDTreeToggle<CR>
 
 
 " Syntastic
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+if has('nvim')
+  autocmd! BufWritePost * Neomake
+else
+  set statusline+=%#warningmsg#
+  set statusline+=%{SyntasticStatuslineFlag()}
+  set statusline+=%*
 
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 0
-let g:syntastic_check_on_wq = 0
-let g:statline_syntastic = 0
+  let g:syntastic_always_populate_loc_list = 1
+  let g:syntastic_auto_loc_list = 1
+  let g:syntastic_check_on_open = 0
+  let g:syntastic_check_on_wq = 0
+  let g:statline_syntastic = 0
+endif
 
 " Close buffer
 map <leader>q :BD<CR>
@@ -230,6 +248,8 @@ let g:startify_list_order = [
 
 " FZF
 set rtp+=~/.fzf
+map <leader>b :Buffers<CR>
+autocmd! FileType fzf tnoremap <buffer> <Esc> <c-c>
 
 " Vim Test
 map <silent> <leader>ft :TestFile<CR>
@@ -246,5 +266,6 @@ if has('nvim')
   tnoremap <Esc> <C-\><C-n>
 endif
 
-" Use deoplete.
+" Deoplete
+>>>>>>> 44a7adb2481ceec35ae8dc7fa6e42f996696671a
 let g:deoplete#enable_at_startup = 1
