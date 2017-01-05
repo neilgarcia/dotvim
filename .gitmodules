@@ -120,6 +120,9 @@
 [submodule "bundle/vim-grepper"]
 	path = bundle/vim-grepper
 	url = https://github.com/mhinz/vim-grepper.git
+[submodule "bundle/lightline"]
+	path = bundle/lightline
+	url = https://github.com/itchyny/lightline.vim.git
 [submodule "bundle/deoplete"]
 	path = bundle/deoplete
 	url = https://github.com/Shougo/deoplete.nvim.git
