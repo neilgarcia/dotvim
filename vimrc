@@ -100,6 +100,9 @@ set directory=~/.tmp " Where to put swap files
 "" User defined commands
 ""
 
+" Sane terminal binding
+tnoremap <Esc> <C-\><C-n>
+
 " Go to previous buffer
 map <Space><Space> <C-^>
 
@@ -141,7 +144,7 @@ map <leader>cfp :!echo "%:p" \| pbcopy<CR><CR>
 map <C-w>o <C-w>\| <bar> <C-w>_
 
 " Remove highlight
-map <leader>h :nohlsearch<CR>
+map <leader>nh :nohlsearch<CR>
 
 ""
 "" Theme
@@ -245,6 +248,8 @@ let g:startify_list_order = [
 
 " FZF
 set rtp+=~/.fzf
+map <leader>b :Buffers<CR>
+autocmd! FileType fzf tnoremap <buffer> <Esc> <c-c>
 
 " Vim Test
 map <silent> <leader>ft :TestFile<CR>
