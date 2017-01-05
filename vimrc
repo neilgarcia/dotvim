@@ -1,6 +1,7 @@
 let g:pathogen_disabled = []
 if has('nvim')
   call add(g:pathogen_disabled, 'ctrlp')
+  call add(g:pathogen_disabled, 'syntastic')
 endif
 
 execute pathogen#infect()
@@ -8,6 +9,8 @@ execute pathogen#infect()
 Helptags " Allow calling :help for plugins installed using pathogen
 
 let mapleader = ","
+map <Space> ,
+
 syntax on
 filetype plugin on
 filetype plugin indent on
@@ -15,13 +18,13 @@ filetype plugin indent on
 map <leader>vr :vsp $MYVIMRC<CR>
 map <leader>so :source $MYVIMRC<CR>
 
-" Formats entire file
-nnoremap <leader>fef :normal! gg=G``<CR>
 
 " Basic Configs
 set number            " Show line number
 set relativenumber    " Show relative number
 set ruler
+set cursorline
+set cursorcolumn
 
 
 ""
@@ -97,6 +100,12 @@ set directory=~/.tmp " Where to put swap files
 "" User defined commands
 ""
 
+" Go to previous buffer
+map <Space><Space> <C-^>
+
+" Formats entire file
+nnoremap <leader>fef :normal! gg=G``<CR>
+
 " Gui Running
 if has("gui_running")
   if has("gui_macvim")
@@ -138,11 +147,15 @@ map <leader>h :nohlsearch<CR>
 "" Theme
 ""
 
+if has('termguicolors')
+  set termguicolors
+end
 set background=dark
 let g:hybrid_custom_term_colors = 1
 " let g:hybrid_reduced_contrast = 1 " Remove this line if using the default palette.
-colorscheme hybrid
-let g:airline_theme = "hybrid"
+colorscheme onedark
+let g:airline_theme = "onedark"
+let g:airline_powerline_fonts = 1
 
 ""
 "" Plugins
@@ -158,7 +171,12 @@ else
 endif
 
 " Ack
-nnoremap <leader>a :Ack!<Space>
+if has('nvim')
+  nnoremap <leader>a :GrepperRg<Space>
+else
+  nnoremap <leader>a :Ack!<Space>
+endif
+
 if executable('rg')
   let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
   " Use ripgrep for ctrlp
@@ -180,15 +198,19 @@ map <leader>t :NERDTreeToggle<CR>
 
 
 " Syntastic
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+if has('nvim')
+  autocmd! BufWritePost * Neomake
+else
+  set statusline+=%#warningmsg#
+  set statusline+=%{SyntasticStatuslineFlag()}
+  set statusline+=%*
 
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 0
-let g:syntastic_check_on_wq = 0
-let g:statline_syntastic = 0
+  let g:syntastic_always_populate_loc_list = 1
+  let g:syntastic_auto_loc_list = 1
+  let g:syntastic_check_on_open = 0
+  let g:syntastic_check_on_wq = 0
+  let g:statline_syntastic = 0
+endif
 
 " Close buffer
 map <leader>q :BD<CR>
@@ -216,11 +238,9 @@ let g:startify_list_order = [
 
 " FZF
 set rtp+=~/.fzf
-command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
-map <leader>ft :Find<Space>
 
 " Vim Test
-map <silent> <leader>tf :TestFile<CR>
+map <silent> <leader>ft :TestFile<CR>
 
 if has('nvim')
   " run tests with :T
@@ -233,3 +253,17 @@ if has('nvim')
   " ain't nobody got time for that
   tnoremap <Esc> <C-\><C-n>
 endif
+
+"Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
+"If you're using tmux version 2.2 or later, you can remove the outermost $TMUX check and use tmux's 24-bit color support
+"(see < http://sunaku.github.io/tmux-24bit-color.html#usage > for more information.)
+if (empty($TMUX))
+  if (has("nvim"))
+  endif
+  "For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
+  "Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
+  " < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
+endif
+
+" Deoplete
+let g:deoplete#enable_at_startup = 1
