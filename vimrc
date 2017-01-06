@@ -110,21 +110,9 @@ map <Space><Space> <C-^>
 " Formats entire file
 nnoremap <leader>fef :normal! gg=G``<CR>
 
-" Gui Running
-if has("gui_running")
-  if has("gui_macvim")
-    set fu
-  else
-    map <silent> <F11>
-          \    :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
-
-    " Hide gvim bars
-    set guioptions-=m  "menu bar
-    set guioptions-=T  "toolbar
-    set guioptions-=r  "scrollbar
-    set guioptions-=L  "scrollbar
-  endif
-endif
+" Split management
+set splitbelow 								"Make splits default to below...
+set splitright								"And to the right. This feels more natural.
 
 " Easier split navigations
 nnoremap <C-J> <C-W><C-J>
@@ -281,3 +269,8 @@ endif
 
 " Deoplete
 let g:deoplete#enable_at_startup = 1
+
+" Ultisnips
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
