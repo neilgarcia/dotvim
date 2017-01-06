@@ -31,9 +31,10 @@ set cursorcolumn
 "" Undo history
 ""
 
-set undofile
-set undodir=~/.vim/undodir
-
+if has("persistent_undo")
+  set undodir=~/.undodir/
+  set undofile
+endif
 
 ""
 "" Whitespace
@@ -140,8 +141,20 @@ inoremap <silent> <C-S>         <C-O>:update<CR>
 set clipboard=unnamedplus
 map <leader>cfp :!echo "%:p" \| pbcopy<CR><CR>
 
-" Zoom pane (<C-w>= to revert)
-map <C-w>o <C-w>\| <bar> <C-w>_
+" Zoom / Restore window.
+function! s:ZoomToggle() abort
+  if exists('t:zoomed') && t:zoomed
+    execute t:zoom_winrestcmd
+    let t:zoomed = 0
+  else
+    let t:zoom_winrestcmd = winrestcmd()
+    resize
+    vertical resize
+    let t:zoomed = 1
+  endif
+endfunction
+command! ZoomToggle call s:ZoomToggle()
+nnoremap <silent> <C-w>o :ZoomToggle<CR>
 
 " Remove highlight
 map <leader>nh :nohlsearch<CR>
