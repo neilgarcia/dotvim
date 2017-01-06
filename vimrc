@@ -280,5 +280,4 @@ if has('nvim')
 endif
 
 " Deoplete
->>>>>>> 44a7adb2481ceec35ae8dc7fa6e42f996696671a
 let g:deoplete#enable_at_startup = 1
