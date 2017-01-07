@@ -10,5 +10,5 @@ Session.vim
 *~
 # auto-generated tag files
 tags
-# undo directory
-!undodir/*
+# Neovim Config
+init.vim
