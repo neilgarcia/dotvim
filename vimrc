@@ -25,7 +25,8 @@ set relativenumber    " Show relative number
 set ruler
 set cursorline
 set cursorcolumn
-
+set autoread
+au FocusGained,BufEnter * :silent! !
 
 ""
 "" Undo history
