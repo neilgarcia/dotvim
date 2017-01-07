@@ -1,1 +1,0 @@
-/Users/neilgarcia/.vim/vimrc
