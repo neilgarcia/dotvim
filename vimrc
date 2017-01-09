@@ -182,32 +182,15 @@ else
   set tags=./tags
 endif
 
-" Ack
-if has('nvim')
-  nnoremap <leader>a :GrepperRg<Space>
-else
-  nnoremap <leader>a :Ack!<Space>
-endif
-
-if executable('rg')
-  let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
-  " Use ripgrep for ctrlp
-  set grepprg=rg\ --color=never
-  let g:ctrlp_user_command = 'rg %s -u --files --color=never --glob ""'
-  let g:ctrlp_use_caching = 0
-  let g:ctrlp_max_files = 0
-
-  " Use rg over grep
-  set grepprg=rg\ --vimgrep
-
-  " Use rg over ack
-  let g:ackprg="rg --vimgrep --no-heading"
-endif
+" Grepper
+map <leader>a :GrepperRg<Space>
+nmap <leader>qf <Plug>QfCtoggle
 
 " Nerdtree
 map <leader>e :NERDTreeFind<CR>
 map <leader>t :NERDTreeToggle<CR>
-
+" Close vim when nerdtree is the only window left
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 " Syntastic
 if has('nvim')
