@@ -171,3 +171,12 @@
 	path = bundle/vim-qf
   url = https://github.com/romainl/vim-qf.git
   ignore = all
+[submodule "bundle/tern_for_vim"]
+	path = bundle/tern_for_vim
+	url = https://github.com/ternjs/tern_for_vim.git
+[submodule "bundle/deoplete-ternjs"]
+	path = bundle/deoplete-ternjs
+	url = https://github.com/carlitux/deoplete-ternjs.git
+[submodule "bundle/jspc"]
+	path = bundle/jspc
+	url = https://github.com/othree/jspc.vim.git
