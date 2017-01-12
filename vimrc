@@ -27,6 +27,7 @@ set cursorline
 set cursorcolumn
 set autoread
 au FocusGained,BufEnter * :silent! !
+set timeoutlen=500    " Dont wait too long for the next key press (useful for ambigous leader commands)
 
 ""
 "" Undo history
@@ -116,10 +117,10 @@ set splitbelow 								"Make splits default to below...
 set splitright								"And to the right. This feels more natural.
 
 " Easier split navigations
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
+noremap <C-J> <C-W><C-J>
+noremap <C-K> <C-W><C-K>
+noremap <C-L> <C-W><C-L>
+noremap <C-H> <C-W><C-H>
 
 " Maps save to Ctrl S
 noremap <silent> <C-S>          :update<CR>
@@ -148,6 +149,9 @@ nnoremap <silent> <C-w>o :ZoomToggle<CR>
 " Remove highlight
 map <leader>nh :nohlsearch<CR>
 
+" puts the caller
+nnoremap <leader>wtf oputs "#" * 90<c-m>puts caller<c-m>puts "#" * 90<esc>
+
 ""
 "" Theme
 ""
@@ -173,14 +177,6 @@ let g:airline_theme='onedark'
 "" Plugins
 ""
 
-" Ctrlp
-if has('nvim')
-  noremap <C-r> :BTags<CR>
-  noremap <C-p> :Files<CR>
-else
-  map <C-r> :CtrlPBufTag<CR>
-  set tags=./tags
-endif
 
 " Grepper
 map <leader>a :GrepperRg<Space>
@@ -192,27 +188,16 @@ map <leader>t :NERDTreeToggle<CR>
 " Close vim when nerdtree is the only window left
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
-" Syntastic
-if has('nvim')
-  autocmd! BufWritePost * Neomake
-else
-  set statusline+=%#warningmsg#
-  set statusline+=%{SyntasticStatuslineFlag()}
-  set statusline+=%*
-
-  let g:syntastic_always_populate_loc_list = 1
-  let g:syntastic_auto_loc_list = 1
-  let g:syntastic_check_on_open = 0
-  let g:syntastic_check_on_wq = 0
-  let g:statline_syntastic = 0
-endif
+" Neomake
+autocmd! BufWritePost * Neomake
+let g:neomake_javascript_enabled_makers = ['eslint']
 
 " Close buffer
-map <leader>q :BD<CR>
+map <leader>q :BD!<CR>
 
 " Git
 map <leader>gbl :Gblame<CR>
-
+map <leader>gst :GFiles?<CR>
 " Buftabline
 set hidden
 nnoremap <C-Tab> :bnext<CR>
@@ -233,7 +218,9 @@ let g:startify_list_order = [
 
 " FZF
 set rtp+=~/.fzf
+map <leader>fs :Files<CR>
 map <leader>b :Buffers<CR>
+nnoremap <C-r> :BTags<CR>
 autocmd! FileType fzf tnoremap <buffer> <Esc> <c-c>
 
 " Vim Test
@@ -253,8 +240,32 @@ endif
 
 " Deoplete
 let g:deoplete#enable_at_startup = 1
+let g:deoplete#omni#functions = {}
+let g:deoplete#omni#functions.javascript = [
+      \ 'tern#Complete',
+      \ 'jspc#omni'
+      \]
+set completeopt=longest,menuone,preview
+let g:deoplete#sources = {}
+let g:deoplete#sources['javascript.jsx'] = ['file', 'ultisnips', 'ternjs']
+let g:tern#command = ['tern']
+let g:tern#arguments = ['--persistent']
 
 " Ultisnips
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+
+" Buftabline
+set hidden
+nnoremap <C-N> :bnext<CR>
+nnoremap <C-P> :bprev<CR>
+
+" Multiple Cursors
+let g:multi_cursor_use_default_mapping=0
+
+" Smooth Scroll
+noremap <silent> <c-u> :call smooth_scroll#up(&scroll*2, 30, 4)<CR>
+noremap <silent> <c-d> :call smooth_scroll#down(&scroll*2, 30, 4)<CR>
+noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 30, 4)<CR>
+noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 30, 4)<CR>
