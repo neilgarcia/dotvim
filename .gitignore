@@ -12,3 +12,5 @@ Session.vim
 tags
 # Neovim Config
 init.vim
+# Vimplug Files
+plugged/**
