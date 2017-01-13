@@ -1,12 +1,43 @@
-let g:pathogen_disabled = []
-if has('nvim')
-  call add(g:pathogen_disabled, 'ctrlp')
-  call add(g:pathogen_disabled, 'syntastic')
-endif
+call plug#begin('~/.vim/plugged')
+  Plug 'jiangmiao/auto-pairs'
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'carlitux/deoplete-ternjs'
+  Plug 'tpope/vim-fugitive'
+  Plug 'junegunn/fzf.vim'
+  Plug 'othree/jspc.vim'
+  Plug 'neomake/neomake'
+  Plug 'kassio/neoterm'
+  Plug 'scrooloose/nerdcommenter'
+  Plug 'scrooloose/nerdtree'
+  Plug 'joshdick/onedark.vim'
+  Plug 'nelstrom/vim-textobj-rubyblock'
+  Plug 'mhinz/vim-startify'
+  Plug 'ternjs/tern_for_vim'
+  Plug 'tomtom/tlib_vim'
+  Plug 'SirVer/ultisnips'
+  Plug 'mbbill/undotree'
+  Plug 'MarcWeber/vim-addon-mw-utils'
+  Plug 'vim-airline/vim-airline'
+  Plug 'vim-airline/vim-airline-themes'
+  Plug 'qpkorr/vim-bufkill'
+  Plug 'ap/vim-buftabline'
+  Plug 'tpope/vim-endwise'
+  Plug 'airblade/vim-gitgutter'
+  Plug 'mhinz/vim-grepper'
+  Plug 'terryma/vim-multiple-cursors'
+  Plug 'romainl/vim-qf'
+  Plug 'tpope/vim-rails'
+  Plug 'vim-ruby/vim-ruby'
+  Plug 'slim-template/vim-slim'
+  Plug 'terryma/vim-smooth-scroll'
+  Plug 'neilpeter08/vim-snippets'
+  Plug 'tpope/vim-surround'
+  Plug 'janko-m/vim-test'
+  Plug 'kana/vim-textobj-user'
+  Plug 'bronson/vim-trailing-whitespace'
+  Plug 'skalnik/vim-vroom'
+call plug#end()
 
-execute pathogen#infect()
-
-Helptags " Allow calling :help for plugins installed using pathogen
 
 let mapleader = ","
 map <Space> ,
@@ -180,7 +211,11 @@ let g:airline_theme='onedark'
 
 " Grepper
 map <leader>a :GrepperRg<Space>
+
+" Quickfix Window
 nmap <leader>qf <Plug>QfCtoggle
+let g:qf_mapping_ack_style = 1
+autocmd! FileType qf noremap <Esc> :cclose<CR>
 
 " Nerdtree
 map <leader>e :NERDTreeFind<CR>
