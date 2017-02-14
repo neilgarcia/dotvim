@@ -1,42 +1,59 @@
 call plug#begin('~/.vim/plugged')
-  Plug 'jiangmiao/auto-pairs'
-  Plug 'Shougo/deoplete.nvim'
-  Plug 'carlitux/deoplete-ternjs'
-  Plug 'tpope/vim-fugitive'
-  Plug 'junegunn/fzf.vim'
-  Plug 'othree/jspc.vim'
-  Plug 'neomake/neomake'
-  Plug 'kassio/neoterm'
-  Plug 'scrooloose/nerdcommenter'
-  Plug 'scrooloose/nerdtree'
-  Plug 'joshdick/onedark.vim'
-  Plug 'nelstrom/vim-textobj-rubyblock'
-  Plug 'mhinz/vim-startify'
-  Plug 'ternjs/tern_for_vim'
-  Plug 'tomtom/tlib_vim'
-  Plug 'SirVer/ultisnips'
-  Plug 'mbbill/undotree'
-  Plug 'MarcWeber/vim-addon-mw-utils'
-  Plug 'vim-airline/vim-airline'
-  Plug 'vim-airline/vim-airline-themes'
-  Plug 'qpkorr/vim-bufkill'
-  Plug 'ap/vim-buftabline'
-  Plug 'tpope/vim-endwise'
-  Plug 'airblade/vim-gitgutter'
-  Plug 'mhinz/vim-grepper'
-  Plug 'terryma/vim-multiple-cursors'
-  Plug 'romainl/vim-qf'
-  Plug 'tpope/vim-rails'
-  Plug 'vim-ruby/vim-ruby'
-  Plug 'slim-template/vim-slim'
-  Plug 'terryma/vim-smooth-scroll'
-  Plug 'neilpeter08/vim-snippets'
-  Plug 'tpope/vim-surround'
-  Plug 'janko-m/vim-test'
-  Plug 'kana/vim-textobj-user'
-  Plug 'bronson/vim-trailing-whitespace'
-  Plug 'skalnik/vim-vroom'
+" Theme
+" Get object name for syntax highlighting
+" echom synIDattr(synID(line('.'),col('.'),0),'name')
+Plug 'neilpeter08/onedark.vim'
+Plug 'itchyny/lightline.vim'
+
+" Deoplete
+function! DoRemote(arg)
+  UpdateRemotePlugins
+endfunction
+Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
+Plug 'thinca/vim-ref'
+Plug 'awetzel/elixir.nvim', { 'do': 'yes \| ./install.sh' }
+Plug 'carlitux/deoplete-ternjs'
+Plug 'Shougo/neco-vim'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+
+" FZF
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'romainl/vim-qf'
+
+" Tests
+Plug 'janko-m/vim-test'
+Plug 'kassio/neoterm'
+
+Plug 'neomake/neomake'
+Plug 'tpope/vim-fugitive'
+Plug 'scrooloose/nerdcommenter'
+Plug 'scrooloose/nerdtree'
+Plug 'nelstrom/vim-textobj-rubyblock'
+Plug 'mhinz/vim-startify'
+Plug 'mbbill/undotree'
+Plug 'qpkorr/vim-bufkill'
+Plug 'ap/vim-buftabline'
+Plug 'tpope/vim-endwise'
+Plug 'mhinz/vim-signify'
+Plug 'mhinz/vim-grepper', { 'branch': 'immediate-output' }
+Plug 'terryma/vim-multiple-cursors'
+Plug 'tpope/vim-rails'
+Plug 'vim-ruby/vim-ruby'
+Plug 'slim-template/vim-slim'
+Plug 'terryma/vim-smooth-scroll'
+Plug 'tpope/vim-surround'
+Plug 'kana/vim-textobj-user'
+Plug 'ntpeters/vim-better-whitespace'
+Plug 'ap/vim-css-color'
+Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
 call plug#end()
+
+" Set python path
+let g:python_host_prog  = '/usr/local/bin/python2'
+let g:python3_host_prog = '/usr/local/bin/python3'
 
 
 let mapleader = ","
@@ -51,6 +68,7 @@ map <leader>so :source $MYVIMRC<CR>
 
 
 " Basic Configs
+set hidden
 set number            " Show line number
 set relativenumber    " Show relative number
 set ruler
@@ -134,6 +152,9 @@ set directory=~/.tmp " Where to put swap files
 "" User defined commands
 ""
 
+" Redo
+map <C-y> :redo<CR>
+
 " Sane terminal binding
 tnoremap <Esc> <C-\><C-n>
 
@@ -164,15 +185,8 @@ map <leader>cfp :!echo "%:p" \| pbcopy<CR><CR>
 
 " Zoom / Restore window.
 function! s:ZoomToggle() abort
-  if exists('t:zoomed') && t:zoomed
-    execute t:zoom_winrestcmd
-    let t:zoomed = 0
-  else
-    let t:zoom_winrestcmd = winrestcmd()
-    resize
-    vertical resize
-    let t:zoomed = 1
-  endif
+  resize
+  vertical resize
 endfunction
 command! ZoomToggle call s:ZoomToggle()
 nnoremap <silent> <C-w>o :ZoomToggle<CR>
@@ -200,9 +214,26 @@ endif
 
 set background=dark           " Enable dark background
 colorscheme onedark           " Set the colorscheme
-let g:airline_powerline_fonts = 1
-let g:airline_theme='onedark'
+" underline searched results instead of highlighting
+"highlight Search guibg=NONE guifg=NONE gui=underline
+let g:lightline = {
+      \ 'colorscheme': 'onedark',
+      \ 'component_function': {
+      \   'filename': 'LightLineFilename'
+      \ },
+      \ 'component': {
+      \   'readonly': '%{&readonly?"":""}',
+      \ },
+      \ 'separator': { 'left': '', 'right': '' },
+      \ 'subseparator': { 'left': '', 'right': '' }
+      \ }
 
+function! LightLineFilename()
+  return expand('%')
+endfunction
+
+" status bar
+set statusline=%<[%n]\ %F\ %m%r%y\ %{exists('g:loaded_fugitive')?fugitive#statusline():''}\ %=%-14.(%l,%c%V%)\ %P
 
 ""
 "" Plugins
@@ -215,7 +246,7 @@ map <leader>a :GrepperRg<Space>
 " Quickfix Window
 nmap <leader>qf <Plug>QfCtoggle
 let g:qf_mapping_ack_style = 1
-autocmd! FileType qf noremap <Esc> :cclose<CR>
+autocmd! FileType qf noremap q :cclose<CR>
 
 " Nerdtree
 map <leader>e :NERDTreeFind<CR>
@@ -228,15 +259,11 @@ autocmd! BufWritePost * Neomake
 let g:neomake_javascript_enabled_makers = ['eslint']
 
 " Close buffer
-map <leader>q :BD!<CR>
+map <leader>q :BD<CR>
 
 " Git
 map <leader>gbl :Gblame<CR>
 map <leader>gst :GFiles?<CR>
-" Buftabline
-set hidden
-nnoremap <C-Tab> :bnext<CR>
-nnoremap <C-S-Tab> :bprev<CR>
 
 " startify
 let g:startify_session_dir = '~/.vim/sessions'
@@ -252,11 +279,11 @@ let g:startify_list_order = [
       \ ]
 
 " FZF
-set rtp+=~/.fzf
-map <leader>fs :Files<CR>
+map <C-P> :Files<CR>
 map <leader>b :Buffers<CR>
 nnoremap <C-r> :BTags<CR>
 autocmd! FileType fzf tnoremap <buffer> <Esc> <c-c>
+let g:fzf_buffers_jump = 1  " [Buffers] Jump to the existing window if possible
 
 " Vim Test
 map <silent> <leader>ft :TestFile<CR>
@@ -265,9 +292,6 @@ if has('nvim')
   " run tests with :T
   let test#strategy = "neoterm"
 
-  " vertical split instead of the default horizontal
-  let g:neoterm_position = "vertical"
-
   " pretty much essential: by default in terminal mode, you have to press ctrl-\-n to get into normal mode
   " ain't nobody got time for that
   tnoremap <Esc> <C-\><C-n>
@@ -275,32 +299,17 @@ endif
 
 " Deoplete
 let g:deoplete#enable_at_startup = 1
-let g:deoplete#omni#functions = {}
-let g:deoplete#omni#functions.javascript = [
-      \ 'tern#Complete',
-      \ 'jspc#omni'
-      \]
-set completeopt=longest,menuone,preview
-let g:deoplete#sources = {}
-let g:deoplete#sources['javascript.jsx'] = ['file', 'ultisnips', 'ternjs']
-let g:tern#command = ['tern']
-let g:tern#arguments = ['--persistent']
 
 " Ultisnips
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
-" Buftabline
-set hidden
-nnoremap <C-N> :bnext<CR>
-nnoremap <C-P> :bprev<CR>
-
-" Multiple Cursors
-let g:multi_cursor_use_default_mapping=0
-
 " Smooth Scroll
-noremap <silent> <c-u> :call smooth_scroll#up(&scroll*2, 30, 4)<CR>
-noremap <silent> <c-d> :call smooth_scroll#down(&scroll*2, 30, 4)<CR>
-noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 30, 4)<CR>
-noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 30, 4)<CR>
+nnoremap <silent> <c-u> :call smooth_scroll#up(&scroll*2, 30, 4)<CR>
+nnoremap <silent> <c-d> :call smooth_scroll#down(&scroll*2, 30, 4)<CR>
+nnoremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 30, 4)<CR>
+nnoremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 30, 4)<CR>
+
+" Better whitespace
+autocmd BufEnter * EnableStripWhitespaceOnSave " strip whitespace on save
