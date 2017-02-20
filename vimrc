@@ -49,6 +49,7 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'ap/vim-css-color'
 Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
+Plug 'easymotion/vim-easymotion'
 call plug#end()
 
 " Set python path
@@ -261,9 +262,29 @@ let g:neomake_javascript_enabled_makers = ['eslint']
 " Close buffer
 map <leader>q :BD<CR>
 
-" Git
-map <leader>gbl :Gblame<CR>
-map <leader>gst :GFiles?<CR>
+" Fugitive mapping
+nmap <leader>gb :Gblame<CR>
+nmap <leader>gc :Gcommit<CR>
+nmap <leader>gd :Gdiff<CR>
+nmap <leader>gg :Ggrep
+nmap <leader>gl :Glog<CR>
+nmap <leader>gs :Gstatus<CR>
+nmap <leader>gw :Gbrowse<CR>
+
+function! PullCurrentBranch()
+  let branch = fugitive#statusline()
+  let branch = substitute(branch, '\c\v\[?,GIT\(([a-z0-9\-_\./:]+)\)\]?', $BRANCH.' \1', 'g')
+  exe ":Git pull origin" . branch
+endfunction
+
+function! PushCurrentBranch()
+  let branch = fugitive#statusline()
+  let branch = substitute(branch, '\c\v\[?,GIT\(([a-z0-9\-_\./:]+)\)\]?', $BRANCH.' \1', 'g')
+  exe ":Git push origin" . branch
+endfunction
+
+nmap <leader>gp :call PullCurrentBranch()<CR>
+nmap <leader>gP :call PushCurrentBranch()<CR>
 
 " startify
 let g:startify_session_dir = '~/.vim/sessions'
@@ -291,6 +312,8 @@ map <silent> <leader>ft :TestFile<CR>
 if has('nvim')
   " run tests with :T
   let test#strategy = "neoterm"
+
+  let g:neoterm_position = "vertical"
 
   " pretty much essential: by default in terminal mode, you have to press ctrl-\-n to get into normal mode
   " ain't nobody got time for that
