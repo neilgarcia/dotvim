@@ -1,55 +1,54 @@
 call plug#begin('~/.vim/plugged')
-" Theme
-" Get object name for syntax highlighting
-" echom synIDattr(synID(line('.'),col('.'),0),'name')
-Plug 'neilpeter08/onedark.vim'
-Plug 'itchyny/lightline.vim'
+  " Theme
+  " Get object name for syntax highlighting
+  " echom synIDattr(synID(line('.'),col('.'),0),'name')
+  Plug 'neilpeter08/onedark.vim'
+  Plug 'itchyny/lightline.vim'
 
-" Deoplete
-function! DoRemote(arg)
-  UpdateRemotePlugins
-endfunction
-Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
-Plug 'thinca/vim-ref'
-Plug 'awetzel/elixir.nvim', { 'do': 'yes \| ./install.sh' }
-Plug 'carlitux/deoplete-ternjs'
-Plug 'Shougo/neco-vim'
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
+  " Deoplete
+  function! DoRemote(arg)
+    UpdateRemotePlugins
+  endfunction
+  Plug 'roxma/nvim-completion-manager', {'do': 'npm install'}
+  Plug 'SirVer/ultisnips'
+  Plug 'honza/vim-snippets'
 
-" FZF
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-Plug 'romainl/vim-qf'
+  " FZF
+  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+  Plug 'junegunn/fzf.vim'
+  Plug 'romainl/vim-qf'
 
-" Tests
-Plug 'janko-m/vim-test'
-Plug 'kassio/neoterm'
+  " Tests
+  Plug 'janko-m/vim-test'
+  Plug 'kassio/neoterm'
 
-Plug 'neomake/neomake'
-Plug 'tpope/vim-fugitive'
-Plug 'scrooloose/nerdcommenter'
-Plug 'scrooloose/nerdtree'
-Plug 'nelstrom/vim-textobj-rubyblock'
-Plug 'mhinz/vim-startify'
-Plug 'mbbill/undotree'
-Plug 'qpkorr/vim-bufkill'
-Plug 'ap/vim-buftabline'
-Plug 'tpope/vim-endwise'
-Plug 'mhinz/vim-signify'
-Plug 'mhinz/vim-grepper', { 'branch': 'immediate-output' }
-Plug 'terryma/vim-multiple-cursors'
-Plug 'tpope/vim-rails'
-Plug 'vim-ruby/vim-ruby'
-Plug 'slim-template/vim-slim'
-Plug 'terryma/vim-smooth-scroll'
-Plug 'tpope/vim-surround'
-Plug 'kana/vim-textobj-user'
-Plug 'ntpeters/vim-better-whitespace'
-Plug 'ap/vim-css-color'
-Plug 'pangloss/vim-javascript'
-Plug 'mxw/vim-jsx'
-Plug 'easymotion/vim-easymotion'
+  Plug 'neomake/neomake'
+  Plug 'tpope/vim-fugitive'
+  Plug 'scrooloose/nerdcommenter'
+  Plug 'scrooloose/nerdtree'
+  Plug 'nelstrom/vim-textobj-rubyblock'
+  Plug 'mhinz/vim-startify'
+  Plug 'mbbill/undotree'
+  Plug 'qpkorr/vim-bufkill'
+  Plug 'ap/vim-buftabline'
+  Plug 'tpope/vim-endwise'
+  Plug 'mhinz/vim-signify'
+  Plug 'mhinz/vim-grepper'
+  Plug 'terryma/vim-multiple-cursors'
+  Plug 'tpope/vim-rails'
+  Plug 'vim-ruby/vim-ruby'
+  Plug 'slim-template/vim-slim'
+  Plug 'terryma/vim-smooth-scroll'
+  Plug 'tpope/vim-surround'
+  Plug 'kana/vim-textobj-user'
+  Plug 'ntpeters/vim-better-whitespace'
+  Plug 'ap/vim-css-color'
+  Plug 'pangloss/vim-javascript'
+  Plug 'mxw/vim-jsx'
+  Plug 'easymotion/vim-easymotion'
+  Plug 'idanarye/vim-merginal'
+  Plug 'ashisha/image.vim'
+  Plug 'wakatime/vim-wakatime'
 call plug#end()
 
 " Set python path
@@ -153,6 +152,9 @@ set directory=~/.tmp " Where to put swap files
 "" User defined commands
 ""
 
+" Close tab
+ca qt tabclose
+
 " Redo
 map <C-y> :redo<CR>
 
@@ -215,26 +217,48 @@ endif
 
 set background=dark           " Enable dark background
 colorscheme onedark           " Set the colorscheme
-" underline searched results instead of highlighting
-"highlight Search guibg=NONE guifg=NONE gui=underline
 let g:lightline = {
-      \ 'colorscheme': 'onedark',
-      \ 'component_function': {
-      \   'filename': 'LightLineFilename'
-      \ },
-      \ 'component': {
-      \   'readonly': '%{&readonly?"":""}',
-      \ },
-      \ 'separator': { 'left': '', 'right': '' },
-      \ 'subseparator': { 'left': '', 'right': '' }
-      \ }
+  \ 'colorscheme': 'onedark',
+  \ 'active': {
+  \   'left': [ [ 'mode', 'paste' ],
+  \             [ 'fugitive', 'readonly', 'filename', 'modified' ] ],
+  \   'right': [ [ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
+  \ },
+  \ 'component': {
+  \   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}',
+  \ },
+  \ 'component_visible_condition': {
+  \   'readonly': '(&filetype!="help"&& &readonly)',
+  \   'modified': '(&filetype!="help"&&(&modified||!&modifiable))',
+  \ },
+  \ 'component_function': {
+  \   'fugitive': 'LightlineFugitive',
+  \ },
+  \ 'separator': { 'left': '', 'right': '' },
+  \ 'subseparator': { 'left': '', 'right': '' }
+  \ }
 
-function! LightLineFilename()
-  return expand('%')
+function! LightlineFugitive() abort
+  if &filetype ==# 'help'
+    return ''
+  endif
+  if has_key(b:, 'lightline_fugitive') && reltimestr(reltime(b:lightline_fugitive_)) =~# '^\s*0\.[0-5]'
+    return b:lightline_fugitive
+  endif
+  try
+    if exists('*fugitive#head')
+      let head = fugitive#head()
+    else
+      return ''
+    endif
+    let b:lightline_fugitive = head
+    let b:lightline_fugitive_ = reltime()
+    return b:lightline_fugitive
+  catch
+  endtry
+  return ''
 endfunction
 
-" status bar
-set statusline=%<[%n]\ %F\ %m%r%y\ %{exists('g:loaded_fugitive')?fugitive#statusline():''}\ %=%-14.(%l,%c%V%)\ %P
 
 ""
 "" Plugins
@@ -268,7 +292,6 @@ nmap <leader>gc :Gcommit<CR>
 nmap <leader>gd :Gdiff<CR>
 nmap <leader>gg :Ggrep
 nmap <leader>gl :Glog<CR>
-nmap <leader>gs :Gstatus<CR>
 nmap <leader>gw :Gbrowse<CR>
 
 function! PullCurrentBranch()
@@ -285,6 +308,23 @@ endfunction
 
 nmap <leader>gp :call PullCurrentBranch()<CR>
 nmap <leader>gP :call PushCurrentBranch()<CR>
+
+" Git status hacks
+
+nmap <leader>gs :Gtabedit :<CR>
+
+function! GStatusTabDiff()
+  if has('multi_byte_encoding')
+    let colon = '\%(:\|\%uff1a\)'
+  else
+    let colon = ':'
+  endif
+  let filename = matchstr(matchstr(getline(line('.')),'^#\t\zs.\{-\}\ze\%( ([^()[:digit:]]\+)\)\=$'), colon.' *\zs.*')
+  tabedit %
+  execute ':Gedit ' . filename
+  Gvdiff
+endfunction
+autocmd FileType gitcommit noremap <buffer> dt :call GStatusTabDiff()<CR>
 
 " startify
 let g:startify_session_dir = '~/.vim/sessions'
@@ -321,12 +361,14 @@ if has('nvim')
 endif
 
 " Deoplete
-let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_at_startup = 0
 
 " Ultisnips
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+set shortmess+=c
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+let g:UltiSnipsExpandTrigger = "<Plug>(ultisnips_expand)"
+inoremap <silent> <c-u> <c-r>=cm#sources#ultisnips#trigger_or_popup("\<Plug>(ultisnips_expand)")<cr>
 
 " Smooth Scroll
 nnoremap <silent> <c-u> :call smooth_scroll#up(&scroll*2, 30, 4)<CR>
