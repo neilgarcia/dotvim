@@ -49,21 +49,23 @@ call plug#begin('~/.vim/plugged')
   Plug 'idanarye/vim-merginal'
   Plug 'ashisha/image.vim'
   Plug 'wakatime/vim-wakatime'
+  Plug 'ludovicchabant/vim-gutentags'
+  Plug 'prendradjaja/vim-vertigo'
 call plug#end()
 
 " Set python path
 let g:python_host_prog  = '/usr/local/bin/python2'
 let g:python3_host_prog = '/usr/local/bin/python3'
 
-
-let mapleader = ","
-map <Space> ,
+let mapleader      = ' '
+let maplocalleader = ' '
+noremap , <Space>
 
 syntax on
 filetype plugin on
 filetype plugin indent on
 " Edit and source vimrc
-map <leader>vr :vsp $MYVIMRC<CR>
+map <leader>vr :tabedit $MYVIMRC<CR>
 map <leader>so :source $MYVIMRC<CR>
 
 
@@ -152,17 +154,21 @@ set directory=~/.tmp " Where to put swap files
 "" User defined commands
 ""
 
+" Circular windows navigation
+nnoremap <tab>   <c-w>w
+nnoremap <S-tab> <c-w>W
+
 " Close tab
 ca qt tabclose
 
 " Redo
 map <C-y> :redo<CR>
 
+" Make Y behave like other capitals
+nnoremap Y y$
+
 " Sane terminal binding
 tnoremap <Esc> <C-\><C-n>
-
-" Go to previous buffer
-map <Space><Space> <C-^>
 
 " Formats entire file
 nnoremap <leader>fef :normal! gg=G``<CR>
@@ -232,13 +238,13 @@ let g:lightline = {
   \   'modified': '(&filetype!="help"&&(&modified||!&modifiable))',
   \ },
   \ 'component_function': {
-  \   'fugitive': 'LightlineFugitive',
+  \   'fugitive': 'Lightlinefugitive',
   \ },
   \ 'separator': { 'left': '', 'right': '' },
   \ 'subseparator': { 'left': '', 'right': '' }
   \ }
 
-function! LightlineFugitive() abort
+function! Lightlinefugitive() abort
   if &filetype ==# 'help'
     return ''
   endif
@@ -264,18 +270,31 @@ endfunction
 "" Plugins
 ""
 
+fun! s:git_root()
+	let path = finddir(".git", expand("%:p:h").";")
+	return fnamemodify(substitute(path, ".git", "", ""), ":p:h")
+endfun
+
+
 
 " Grepper
+let g:grepper = {}
+let g:grepper.dir = 'repo,file'
 map <leader>a :GrepperRg<Space>
 
 " Quickfix Window
 nmap <leader>qf <Plug>QfCtoggle
 let g:qf_mapping_ack_style = 1
-autocmd! FileType qf noremap q :cclose<CR>
+autocmd! FileType qf noremap <Esc> :cclose<CR>
 
 " Nerdtree
+""Open NERDTree if no files specified
+"autocmd StdinReadPre * let s:std_in=1
+"autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 map <leader>e :NERDTreeFind<CR>
 map <leader>t :NERDTreeToggle<CR>
+autocmd! FileType nerdtree noremap <Esc> :NERDTreeClose<CR>
+
 " Close vim when nerdtree is the only window left
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
@@ -295,15 +314,13 @@ nmap <leader>gl :Glog<CR>
 nmap <leader>gw :Gbrowse<CR>
 
 function! PullCurrentBranch()
-  let branch = fugitive#statusline()
-  let branch = substitute(branch, '\c\v\[?,GIT\(([a-z0-9\-_\./:]+)\)\]?', $BRANCH.' \1', 'g')
-  exe ":Git pull origin" . branch
+  let branch = fugitive#head()
+  exe ":Git pull origin " . branch
 endfunction
 
 function! PushCurrentBranch()
-  let branch = fugitive#statusline()
-  let branch = substitute(branch, '\c\v\[?,GIT\(([a-z0-9\-_\./:]+)\)\]?', $BRANCH.' \1', 'g')
-  exe ":Git push origin" . branch
+  let branch = fugitive#head()
+  exe ":Git push origin " . branch
 endfunction
 
 nmap <leader>gp :call PullCurrentBranch()<CR>
@@ -324,9 +341,11 @@ function! GStatusTabDiff()
   execute ':Gedit ' . filename
   Gvdiff
 endfunction
-autocmd FileType gitcommit noremap <buffer> dt :call GStatusTabDiff()<CR>
+autocmd FileType gitcommit noremap <buffer> d :call GStatusTabDiff()<CR>
 
 " startify
+let g:startify_change_to_dir = 0
+let g:startify_change_to_vcs_root = 1
 let g:startify_session_dir = '~/.vim/sessions'
 let g:startify_session_persistence = 1
 let g:startify_relative_path = 1
@@ -340,7 +359,13 @@ let g:startify_list_order = [
       \ ]
 
 " FZF
-map <C-P> :Files<CR>
+" --files: List files that would be searched but do not search
+" --no-ignore: Do not respect .gitignore, etc...
+" --hidden: Search hidden files and folders
+" --follow: Follow symlinks
+" --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
+let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --follow --glob "!.git/*"'
+nnoremap <silent> <C-P> :exe 'Files ' . <SID>git_root()<CR>
 map <leader>b :Buffers<CR>
 nnoremap <C-r> :BTags<CR>
 autocmd! FileType fzf tnoremap <buffer> <Esc> <c-c>
@@ -365,10 +390,12 @@ let g:deoplete#enable_at_startup = 0
 
 " Ultisnips
 set shortmess+=c
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-let g:UltiSnipsExpandTrigger = "<Plug>(ultisnips_expand)"
-inoremap <silent> <c-u> <c-r>=cm#sources#ultisnips#trigger_or_popup("\<Plug>(ultisnips_expand)")<cr>
+"inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+"inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+let g:UltiSnipsExpandTrigger = "<Tab>"
+let g:UltiSnipsJumpForwardTrigger="<Tab>"
+let g:UltiSnipsJumpBackwardTrigger="<S-Tab>"
+"inoremap <silent> <c-u> <c-r>=cm#sources#ultisnips#trigger_or_popup("\<Plug>(ultisnips_expand)")<cr>
 
 " Smooth Scroll
 nnoremap <silent> <c-u> :call smooth_scroll#up(&scroll*2, 30, 4)<CR>
@@ -378,3 +405,15 @@ nnoremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 30, 4)<CR>
 
 " Better whitespace
 autocmd BufEnter * EnableStripWhitespaceOnSave " strip whitespace on save
+
+" Merginal
+noremap <leader>m :Merginal<CR>
+autocmd BufFilePost Merginal:* setlocal relativenumber
+
+" Vertigo
+nnoremap <silent> <Space>j :<C-U>VertigoDown n<CR>
+vnoremap <silent> <Space>j :<C-U>VertigoDown v<CR>
+onoremap <silent> <Space>j :<C-U>VertigoDown o<CR>
+nnoremap <silent> <Space>k :<C-U>VertigoUp n<CR>
+vnoremap <silent> <Space>k :<C-U>VertigoUp v<CR>
+onoremap <silent> <Space>k :<C-U>VertigoUp o<CR>

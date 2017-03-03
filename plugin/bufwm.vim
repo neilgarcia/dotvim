@@ -29,8 +29,8 @@ function! s:DeleteBuffer()
 endfunction
 
 " quick buffer switching
-nnoremap <silent> ] :call<Space><SID>KeepSwitching('bnext')<CR><C-G>
-nnoremap <silent> [ :call<Space><SID>KeepSwitching('bprev')<CR><C-G>
+nnoremap <silent> L :call<Space><SID>KeepSwitching('bnext')<CR><C-G>
+nnoremap <silent> H :call<Space><SID>KeepSwitching('bprev')<CR><C-G>
 
 " I delete buffers a lot
 nnoremap <silent> ZD :call<Space><SID>DeleteBuffer()<CR><C-G>
