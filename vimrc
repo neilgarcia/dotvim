@@ -51,6 +51,16 @@ call plug#begin('~/.vim/plugged')
   Plug 'wakatime/vim-wakatime'
   Plug 'ludovicchabant/vim-gutentags'
   Plug 'prendradjaja/vim-vertigo'
+  Plug 'ryanoasis/vim-devicons'
+  "Plug 'jceb/vim-orgmode'
+
+  "" Org Mode Helpers
+  "Plug 'vim-scripts/utl.vim'
+  "Plug 'tpope/vim-repeat'
+  "Plug 'tpope/vim-speeddating'
+  "Plug 'chrisbra/NrrwRgn'
+  "Plug 'mattn/calendar-vim'
+  "Plug 'vim-scripts/SyntaxRange'
 call plug#end()
 
 " Set python path
@@ -153,6 +163,9 @@ set directory=~/.tmp " Where to put swap files
 ""
 "" User defined commands
 ""
+
+" bind : to ;
+nnoremap ; :
 
 " Circular windows navigation
 nnoremap <tab>   <c-w>w
@@ -306,6 +319,10 @@ let g:neomake_javascript_enabled_makers = ['eslint']
 map <leader>q :BD<CR>
 
 " Fugitive mapping
+
+" make fugitive work on empty buffers
+autocmd BufWinEnter * if empty(expand('<afile>'))|call fugitive#detect(getcwd())|endif
+
 nmap <leader>gb :Gblame<CR>
 nmap <leader>gc :Gcommit<CR>
 nmap <leader>gd :Gdiff<CR>
@@ -417,3 +434,10 @@ onoremap <silent> <Space>j :<C-U>VertigoDown o<CR>
 nnoremap <silent> <Space>k :<C-U>VertigoUp n<CR>
 vnoremap <silent> <Space>k :<C-U>VertigoUp v<CR>
 onoremap <silent> <Space>k :<C-U>VertigoUp o<CR>
+
+" Webdev icons
+let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+let g:DevIconsEnableFoldersOpenClose = 1
+
+" Easy motion
+map <Leader> <Plug>(easymotion-prefix)
