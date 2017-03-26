@@ -6,9 +6,6 @@ call plug#begin('~/.vim/plugged')
   Plug 'itchyny/lightline.vim'
 
   " Deoplete
-  function! DoRemote(arg)
-    UpdateRemotePlugins
-  endfunction
   Plug 'roxma/nvim-completion-manager', {'do': 'npm install'}
   Plug 'SirVer/ultisnips'
   Plug 'honza/vim-snippets'
@@ -22,14 +19,18 @@ call plug#begin('~/.vim/plugged')
   Plug 'janko-m/vim-test'
   Plug 'kassio/neoterm'
 
+  " Text object
+  Plug 'kana/vim-textobj-function'
+  Plug 'thinca/vim-textobj-function-javascript'
+  Plug 'kana/vim-textobj-user'
+  Plug 'nelstrom/vim-textobj-rubyblock'
+
   Plug 'neomake/neomake'
   Plug 'tpope/vim-fugitive'
   Plug 'scrooloose/nerdcommenter'
   Plug 'scrooloose/nerdtree'
-  Plug 'nelstrom/vim-textobj-rubyblock'
   Plug 'mhinz/vim-startify'
   Plug 'mbbill/undotree'
-  Plug 'qpkorr/vim-bufkill'
   Plug 'ap/vim-buftabline'
   Plug 'tpope/vim-endwise'
   Plug 'mhinz/vim-signify'
@@ -40,7 +41,6 @@ call plug#begin('~/.vim/plugged')
   Plug 'slim-template/vim-slim'
   Plug 'terryma/vim-smooth-scroll'
   Plug 'tpope/vim-surround'
-  Plug 'kana/vim-textobj-user'
   Plug 'ntpeters/vim-better-whitespace'
   Plug 'ap/vim-css-color'
   Plug 'pangloss/vim-javascript'
@@ -50,17 +50,12 @@ call plug#begin('~/.vim/plugged')
   Plug 'ashisha/image.vim'
   Plug 'wakatime/vim-wakatime'
   Plug 'ludovicchabant/vim-gutentags'
+  Plug 'majutsushi/tagbar'
   Plug 'prendradjaja/vim-vertigo'
   Plug 'ryanoasis/vim-devicons'
-  "Plug 'jceb/vim-orgmode'
-
-  "" Org Mode Helpers
-  "Plug 'vim-scripts/utl.vim'
-  "Plug 'tpope/vim-repeat'
-  "Plug 'tpope/vim-speeddating'
-  "Plug 'chrisbra/NrrwRgn'
-  "Plug 'mattn/calendar-vim'
-  "Plug 'vim-scripts/SyntaxRange'
+  Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'javascript.jsx'] }
+  Plug 'mhinz/vim-sayonara'
+  Plug 'tweekmonster/startuptime.vim'
 call plug#end()
 
 " Set python path
@@ -161,6 +156,12 @@ set backupdir=~/.tmp " Where to put backup files
 set directory=~/.tmp " Where to put swap files
 
 ""
+"" Tags
+""
+
+set tags=./tags,tags;/
+
+""
 "" User defined commands
 ""
 
@@ -171,8 +172,16 @@ nnoremap ; :
 nnoremap <tab>   <c-w>w
 nnoremap <S-tab> <c-w>W
 
+if (exists('+colorcolumn'))
+  set colorcolumn=80
+  highlight ColorColumn ctermbg=9
+endif
+
 " Close tab
 ca qt tabclose
+
+" Show all tags instead of jumping into 1 like a fucking idiot
+nnoremap <C-]> g<C-]>
 
 " Redo
 map <C-y> :redo<CR>
@@ -207,8 +216,15 @@ map <leader>cfp :!echo "%:p" \| pbcopy<CR><CR>
 
 " Zoom / Restore window.
 function! s:ZoomToggle() abort
-  resize
-  vertical resize
+    if exists('t:zoomed') && t:zoomed
+        execute t:zoom_winrestcmd
+        let t:zoomed = 0
+    else
+        let t:zoom_winrestcmd = winrestcmd()
+        resize
+        vertical resize
+        let t:zoomed = 1
+    endif
 endfunction
 command! ZoomToggle call s:ZoomToggle()
 nnoremap <silent> <C-w>o :ZoomToggle<CR>
@@ -316,7 +332,7 @@ autocmd! BufWritePost * Neomake
 let g:neomake_javascript_enabled_makers = ['eslint']
 
 " Close buffer
-map <leader>q :BD<CR>
+map <leader>q :Sayonara!<CR>
 
 " Fugitive mapping
 
@@ -381,12 +397,19 @@ let g:startify_list_order = [
 " --hidden: Search hidden files and folders
 " --follow: Follow symlinks
 " --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
-let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --follow --glob "!.git/*"'
+"let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --follow --glob "!.git/*"'
 nnoremap <silent> <C-P> :exe 'Files ' . <SID>git_root()<CR>
 map <leader>b :Buffers<CR>
 nnoremap <C-r> :BTags<CR>
 autocmd! FileType fzf tnoremap <buffer> <Esc> <c-c>
 let g:fzf_buffers_jump = 1  " [Buffers] Jump to the existing window if possible
+
+let g:rg_command = '
+  \ rg --column --line-number --no-heading --fixed-strings --ignore-case  --follow --color "always"
+  \ -g "*.{js,json,php,md,styl,pug,jade,config,py,cpp,c,go,hs,rb,conf,fa,lst}"
+  \ -g "!{.git,node_modules,vendor,build,yarn.lock,*.sty}/*" '
+
+command! -bang -nargs=* F call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
 
 " Vim Test
 map <silent> <leader>ft :TestFile<CR>
@@ -441,3 +464,29 @@ let g:DevIconsEnableFoldersOpenClose = 1
 
 " Easy motion
 map <Leader> <Plug>(easymotion-prefix)
+
+" Neovim completion manager
+let g:endwise_no_mappings = 1
+imap <C-X><CR>   <CR><Plug>AlwaysEnd
+imap <expr> <CR> (pumvisible() ? "\<C-Y>\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd")
+
+" Tarbar
+nmap <F8> :TagbarToggle<CR>
+
+" Gutentags
+let g:gutentags_define_advanced_commands = 1
+
+
+""
+"" Language Specific
+""
+
+" Ruby
+autocmd! FileType ruby setlocal iskeyword+=!,?
+
+" Scss
+setlocal iskeyword+=$
+setlocal iskeyword+=-
+
+"Gentags
+let g:gen_tags#verbose = 1
