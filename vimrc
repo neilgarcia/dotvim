@@ -5,7 +5,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'neilpeter08/onedark.vim'
   Plug 'itchyny/lightline.vim'
 
-  " Deoplete
+  " Auto completion
   Plug 'roxma/nvim-completion-manager', {'do': 'npm install'}
   Plug 'SirVer/ultisnips'
   Plug 'honza/vim-snippets'
@@ -25,15 +25,15 @@ call plug#begin('~/.vim/plugged')
   Plug 'kana/vim-textobj-user'
   Plug 'nelstrom/vim-textobj-rubyblock'
 
-  Plug 'neomake/neomake'
+  "Plug 'neomake/neomake'
+  Plug 'w0rp/ale'
   Plug 'tpope/vim-fugitive'
-  Plug 'scrooloose/nerdcommenter'
+  Plug 'tpope/vim-commentary'
   Plug 'scrooloose/nerdtree'
   Plug 'mhinz/vim-startify'
   Plug 'mbbill/undotree'
   Plug 'ap/vim-buftabline'
   Plug 'tpope/vim-endwise'
-  Plug 'mhinz/vim-signify'
   Plug 'mhinz/vim-grepper'
   Plug 'terryma/vim-multiple-cursors'
   Plug 'tpope/vim-rails'
@@ -47,15 +47,15 @@ call plug#begin('~/.vim/plugged')
   Plug 'mxw/vim-jsx'
   Plug 'easymotion/vim-easymotion'
   Plug 'idanarye/vim-merginal'
-  Plug 'ashisha/image.vim'
   Plug 'wakatime/vim-wakatime'
   Plug 'ludovicchabant/vim-gutentags'
-  Plug 'majutsushi/tagbar'
   Plug 'prendradjaja/vim-vertigo'
   Plug 'ryanoasis/vim-devicons'
   Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'javascript.jsx'] }
   Plug 'mhinz/vim-sayonara'
   Plug 'tweekmonster/startuptime.vim'
+  Plug 'tpope/vim-sleuth'
+  Plug 'junegunn/vim-easy-align'
 call plug#end()
 
 " Set python path
@@ -71,7 +71,7 @@ filetype plugin on
 filetype plugin indent on
 " Edit and source vimrc
 map <leader>vr :tabedit $MYVIMRC<CR>
-map <leader>so :source $MYVIMRC<CR>
+"map <leader>so :source $MYVIMRC<CR>
 
 
 " Basic Configs
@@ -174,14 +174,14 @@ nnoremap <S-tab> <c-w>W
 
 if (exists('+colorcolumn'))
   set colorcolumn=80
-  highlight ColorColumn ctermbg=9
+  highlight ColorColumn ctermbg=1
 endif
 
 " Close tab
 ca qt tabclose
 
 " Show all tags instead of jumping into 1 like a fucking idiot
-nnoremap <C-]> g<C-]>
+"nnoremap <C-]> g<C-]>
 
 " Redo
 map <C-y> :redo<CR>
@@ -227,7 +227,7 @@ function! s:ZoomToggle() abort
     endif
 endfunction
 command! ZoomToggle call s:ZoomToggle()
-nnoremap <silent> <C-w>o :ZoomToggle<CR>
+nnoremap <silent> zz :ZoomToggle<CR>
 
 " Remove highlight
 map <leader>nh :nohlsearch<CR>
@@ -256,7 +256,7 @@ let g:lightline = {
   \ 'colorscheme': 'onedark',
   \ 'active': {
   \   'left': [ [ 'mode', 'paste' ],
-  \             [ 'fugitive', 'readonly', 'filename', 'modified' ] ],
+  \             [ 'fugitive', 'readonly', 'filepath', 'modified' ] ],
   \   'right': [ [ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
   \ },
   \ 'component': {
@@ -268,6 +268,7 @@ let g:lightline = {
   \ },
   \ 'component_function': {
   \   'fugitive': 'Lightlinefugitive',
+  \   'filepath': 'Lightlinefilepath'
   \ },
   \ 'separator': { 'left': '', 'right': '' },
   \ 'subseparator': { 'left': '', 'right': '' }
@@ -292,6 +293,25 @@ function! Lightlinefugitive() abort
   catch
   endtry
   return ''
+endfunction
+
+function! Lightlinefilepath()
+  return @%
+endfunction
+
+function! MyLightLinePercent()
+  if &ft !=? 'nerdtree'
+    return line('.') * 100 / line('$') . '%'
+  else
+    return ''
+  endif
+endfunction
+function! MyLightLineLineInfo()
+  if &ft !=? 'nerdtree'
+    return line('.').':'. col('.')
+  else
+    return ''
+  endif
 endfunction
 
 
@@ -327,12 +347,9 @@ autocmd! FileType nerdtree noremap <Esc> :NERDTreeClose<CR>
 " Close vim when nerdtree is the only window left
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
-" Neomake
-autocmd! BufWritePost * Neomake
-let g:neomake_javascript_enabled_makers = ['eslint']
-
 " Close buffer
 map <leader>q :Sayonara!<CR>
+map <leader>Q :bufdo Sayonara!<CR>
 
 " Fugitive mapping
 
@@ -476,17 +493,25 @@ nmap <F8> :TagbarToggle<CR>
 " Gutentags
 let g:gutentags_define_advanced_commands = 1
 
+" Easy Align
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
 
-""
-"" Language Specific
-""
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
 
-" Ruby
-autocmd! FileType ruby setlocal iskeyword+=!,?
+" ALE
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_enter = 0
 
-" Scss
-setlocal iskeyword+=$
-setlocal iskeyword+=-
-
-"Gentags
-let g:gen_tags#verbose = 1
+" lint JSX with eslint
+augroup FiletypeGroup
+    autocmd!
+    au BufNewFile,BufRead *.jsx set filetype=javascript.jsx
+augroup END
+let g:ale_linters = {
+\  'jsx':        ['eslint'],
+\  'javascript': ['eslint']
+\}
+let g:ale_sign_error = '✖'
+let g:ale_sign_warning = '!'
