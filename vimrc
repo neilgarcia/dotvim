@@ -29,7 +29,6 @@ call plug#begin('~/.vim/plugged')
   Plug 'w0rp/ale'
   Plug 'tpope/vim-fugitive'
   Plug 'tpope/vim-commentary'
-  Plug 'scrooloose/nerdtree'
   Plug 'mhinz/vim-startify'
   Plug 'mbbill/undotree'
   Plug 'ap/vim-buftabline'
@@ -56,6 +55,8 @@ call plug#begin('~/.vim/plugged')
   Plug 'tweekmonster/startuptime.vim'
   Plug 'tpope/vim-sleuth'
   Plug 'junegunn/vim-easy-align'
+  Plug 'Shougo/vimfiler.vim'
+  Plug 'Shougo/unite.vim'
 call plug#end()
 
 " Set python path
@@ -299,22 +300,6 @@ function! Lightlinefilepath()
   return @%
 endfunction
 
-function! MyLightLinePercent()
-  if &ft !=? 'nerdtree'
-    return line('.') * 100 / line('$') . '%'
-  else
-    return ''
-  endif
-endfunction
-function! MyLightLineLineInfo()
-  if &ft !=? 'nerdtree'
-    return line('.').':'. col('.')
-  else
-    return ''
-  endif
-endfunction
-
-
 ""
 "" Plugins
 ""
@@ -335,17 +320,6 @@ map <leader>a :GrepperRg<Space>
 nmap <leader>qf <Plug>QfCtoggle
 let g:qf_mapping_ack_style = 1
 autocmd! FileType qf noremap <Esc> :cclose<CR>
-
-" Nerdtree
-""Open NERDTree if no files specified
-"autocmd StdinReadPre * let s:std_in=1
-"autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-map <leader>e :NERDTreeFind<CR>
-map <leader>t :NERDTreeToggle<CR>
-autocmd! FileType nerdtree noremap <Esc> :NERDTreeClose<CR>
-
-" Close vim when nerdtree is the only window left
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 " Close buffer
 map <leader>q :Sayonara!<CR>
@@ -515,3 +489,7 @@ let g:ale_linters = {
 \}
 let g:ale_sign_error = '✖'
 let g:ale_sign_warning = '!'
+
+" VimFiler
+autocmd FileType vimfiler nnoremap <silent><buffer><expr> s vimfiler#do_switch_action('split')
+autocmd FileType vimfiler nnoremap <silent><buffer><expr> v vimfiler#do_switch_action('vsplit')

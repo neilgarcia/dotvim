@@ -1,7 +1,8 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =5
-let g:netrw_dirhist_1='/Users/neilgarcia'
-let g:netrw_dirhist_2='/Users/neilgarcia/www/serviceseeking'
+let g:netrw_dirhist_cnt =6
+let g:netrw_dirhist_1='/Users/neilgarcia/.vim'
+let g:netrw_dirhist_2='/Users/neilgarcia/.vim/plugin'
 let g:netrw_dirhist_3='/Users/neilgarcia/.vim'
-let g:netrw_dirhist_4='/Users/neilgarcia/www/serviceseeking/engines/feedback/app/models/feedback'
-let g:netrw_dirhist_5='/Users/neilgarcia/www/serviceseeking/app/models'
+let g:netrw_dirhist_4='/Users/neilgarcia/.vim/plugin'
+let g:netrw_dirhist_5='/Users/neilgarcia/.vim'
+let g:netrw_dirhist_6='/Users/neilgarcia/.vim/plugin'
