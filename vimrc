@@ -4,11 +4,14 @@ call plug#begin('~/.vim/plugged')
   " echom synIDattr(synID(line('.'),col('.'),0),'name')
   Plug 'neilpeter08/onedark.vim'
   Plug 'itchyny/lightline.vim'
+  Plug 'rakr/vim-one'
 
   " Auto completion
   Plug 'roxma/nvim-completion-manager', {'do': 'npm install'}
-  Plug 'SirVer/ultisnips'
-  Plug 'honza/vim-snippets'
+  " Plug 'SirVer/ultisnips'
+  " Plug 'honza/vim-snippets'
+  Plug 'roxma/ncm-rct-complete'
+  Plug 'roxma/nvim-cm-tern', {'do': 'npm install'}
 
   " FZF
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -19,17 +22,13 @@ call plug#begin('~/.vim/plugged')
   Plug 'janko-m/vim-test'
   Plug 'kassio/neoterm'
 
-  " Text object
-  Plug 'kana/vim-textobj-function'
-  Plug 'thinca/vim-textobj-function-javascript'
-  Plug 'kana/vim-textobj-user'
-  Plug 'nelstrom/vim-textobj-rubyblock'
+  " File explorer
+  Plug 'scrooloose/nerdtree'
 
   "Plug 'neomake/neomake'
   Plug 'w0rp/ale'
   Plug 'tpope/vim-fugitive'
   Plug 'tpope/vim-commentary'
-  Plug 'scrooloose/nerdtree'
   Plug 'mhinz/vim-startify'
   Plug 'mbbill/undotree'
   Plug 'ap/vim-buftabline'
@@ -49,13 +48,23 @@ call plug#begin('~/.vim/plugged')
   Plug 'idanarye/vim-merginal'
   Plug 'wakatime/vim-wakatime'
   Plug 'ludovicchabant/vim-gutentags'
-  Plug 'prendradjaja/vim-vertigo'
   Plug 'ryanoasis/vim-devicons'
   Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'javascript.jsx'] }
   Plug 'mhinz/vim-sayonara'
   Plug 'tweekmonster/startuptime.vim'
-  Plug 'tpope/vim-sleuth'
   Plug 'junegunn/vim-easy-align'
+  Plug 'Konfekt/FastFold'
+  Plug 'AndrewRadev/linediff.vim'
+
+  " Text object
+  Plug 'kana/vim-textobj-function'
+  Plug 'thinca/vim-textobj-function-javascript'
+  Plug 'kana/vim-textobj-user'
+  Plug 'nelstrom/vim-textobj-rubyblock'
+  Plug 'maciej-ka/ZoomWin'
+  Plug 'wellle/targets.vim'
+  Plug 'equalsraf/neovim-gui-shim'
+  Plug 'tpope/vim-repeat'
 call plug#end()
 
 " Set python path
@@ -71,7 +80,7 @@ filetype plugin on
 filetype plugin indent on
 " Edit and source vimrc
 map <leader>vr :tabedit $MYVIMRC<CR>
-"map <leader>so :source $MYVIMRC<CR>
+map <leader>so :source $MYVIMRC<CR>
 
 
 " Basic Configs
@@ -214,26 +223,14 @@ inoremap <silent> <C-S>         <C-O>:update<CR>
 set clipboard=unnamedplus
 map <leader>cfp :!echo "%:p" \| pbcopy<CR><CR>
 
-" Zoom / Restore window.
-function! s:ZoomToggle() abort
-    if exists('t:zoomed') && t:zoomed
-        execute t:zoom_winrestcmd
-        let t:zoomed = 0
-    else
-        let t:zoom_winrestcmd = winrestcmd()
-        resize
-        vertical resize
-        let t:zoomed = 1
-    endif
-endfunction
-command! ZoomToggle call s:ZoomToggle()
-nnoremap <silent> zz :ZoomToggle<CR>
-
 " Remove highlight
 map <leader>nh :nohlsearch<CR>
 
 " puts the caller
 nnoremap <leader>wtf oputs "#" * 90<c-m>puts caller<c-m>puts "#" * 90<esc>
+
+" Ctrl backspace deletes word
+inoremap <C-BS> <C-w>
 
 ""
 "" Theme
@@ -251,7 +248,8 @@ if (has("termguicolors"))
 endif
 
 set background=dark           " Enable dark background
-colorscheme onedark           " Set the colorscheme
+colorscheme one           " Set the colorscheme
+set foldmethod=manual
 let g:lightline = {
   \ 'colorscheme': 'onedark',
   \ 'active': {
@@ -299,21 +297,6 @@ function! Lightlinefilepath()
   return @%
 endfunction
 
-function! MyLightLinePercent()
-  if &ft !=? 'nerdtree'
-    return line('.') * 100 / line('$') . '%'
-  else
-    return ''
-  endif
-endfunction
-function! MyLightLineLineInfo()
-  if &ft !=? 'nerdtree'
-    return line('.').':'. col('.')
-  else
-    return ''
-  endif
-endfunction
-
 
 ""
 "" Plugins
@@ -329,6 +312,7 @@ endfun
 " Grepper
 let g:grepper = {}
 let g:grepper.dir = 'repo,file'
+let g:grepper.open = 0
 map <leader>a :GrepperRg<Space>
 
 " Quickfix Window
@@ -340,9 +324,8 @@ autocmd! FileType qf noremap <Esc> :cclose<CR>
 ""Open NERDTree if no files specified
 "autocmd StdinReadPre * let s:std_in=1
 "autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-map <leader>e :NERDTreeFind<CR>
-map <leader>t :NERDTreeToggle<CR>
-autocmd! FileType nerdtree noremap <Esc> :NERDTreeClose<CR>
+map <silent> <leader>e :NERDTreeFind<CR>
+map <silent> <leader>t :NERDTreeToggle<CR>
 
 " Close vim when nerdtree is the only window left
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
@@ -416,6 +399,7 @@ let g:startify_list_order = [
 " --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
 "let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --follow --glob "!.git/*"'
 nnoremap <silent> <C-P> :exe 'Files ' . <SID>git_root()<CR>
+imap <c-x><c-l> <plug>(fzf-complete-line)
 map <leader>b :Buffers<CR>
 nnoremap <C-r> :BTags<CR>
 autocmd! FileType fzf tnoremap <buffer> <Esc> <c-c>
@@ -467,14 +451,6 @@ autocmd BufEnter * EnableStripWhitespaceOnSave " strip whitespace on save
 noremap <leader>m :Merginal<CR>
 autocmd BufFilePost Merginal:* setlocal relativenumber
 
-" Vertigo
-nnoremap <silent> <Space>j :<C-U>VertigoDown n<CR>
-vnoremap <silent> <Space>j :<C-U>VertigoDown v<CR>
-onoremap <silent> <Space>j :<C-U>VertigoDown o<CR>
-nnoremap <silent> <Space>k :<C-U>VertigoUp n<CR>
-vnoremap <silent> <Space>k :<C-U>VertigoUp v<CR>
-onoremap <silent> <Space>k :<C-U>VertigoUp o<CR>
-
 " Webdev icons
 let g:WebDevIconsUnicodeDecorateFolderNodes = 1
 let g:DevIconsEnableFoldersOpenClose = 1
@@ -515,3 +491,22 @@ let g:ale_linters = {
 \}
 let g:ale_sign_error = '✖'
 let g:ale_sign_warning = '!'
+
+" FastFold
+nmap zuz <Plug>(FastFoldUpdate)
+let g:fastfold_savehook = 1
+let g:fastfold_fold_command_suffixes =  ['x','X','a','A','o','O','c','C']
+let g:fastfold_fold_movement_commands = [']z', '[z', 'zj', 'zk']
+
+" EasyMotion
+let g:EasyMotion_do_mapping = 0
+nmap s <Plug>(easymotion-overwin-f2)
+omap s <Plug>(easymotion-overwin-f2)
+xmap s <Plug>(easymotion-overwin-f2)
+
+" Turn on case insensitive feature
+let g:EasyMotion_smartcase = 1
+
+" JK motions: Line motions
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
