@@ -297,7 +297,6 @@ function! Lightlinefilepath()
   return @%
 endfunction
 
-
 ""
 "" Plugins
 ""
