@@ -1,4 +1,7 @@
 call plug#begin('~/.vim/plugged')
+  set encoding=utf-8
+  scriptencoding utf-8
+
   " Theme
   " Get object name for syntax highlighting
   " echom synIDattr(synID(line('.'),col('.'),0),'name')
@@ -8,10 +11,11 @@ call plug#begin('~/.vim/plugged')
 
   " Auto completion
   Plug 'roxma/nvim-completion-manager', {'do': 'npm install'}
-  " Plug 'SirVer/ultisnips'
-  " Plug 'honza/vim-snippets'
+  Plug 'SirVer/ultisnips'
+  Plug 'honza/vim-snippets'
   Plug 'roxma/ncm-rct-complete'
   Plug 'roxma/nvim-cm-tern', {'do': 'npm install'}
+  Plug 'othree/csscomplete.vim'
 
   " FZF
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -65,14 +69,15 @@ call plug#begin('~/.vim/plugged')
   Plug 'wellle/targets.vim'
   Plug 'equalsraf/neovim-gui-shim'
   Plug 'tpope/vim-repeat'
+  Plug 'tpope/tpope-vim-abolish'
 call plug#end()
 
 " Set python path
 let g:python_host_prog  = '/usr/local/bin/python2'
 let g:python3_host_prog = '/usr/local/bin/python3'
 
-let mapleader      = ' '
-let maplocalleader = ' '
+let g:mapleader      = ' '
+let g:maplocalleader = ' '
 noremap , <Space>
 
 syntax on
@@ -98,7 +103,7 @@ set timeoutlen=500    " Dont wait too long for the next key press (useful for am
 "" Undo history
 ""
 
-if has("persistent_undo")
+if has('persistent_undo')
   set undodir=~/.undodir/
   set undofile
 endif
@@ -221,7 +226,7 @@ inoremap <silent> <C-S>         <C-O>:update<CR>
 
 " Copy file path easily for unit testing
 set clipboard=unnamedplus
-map <leader>cfp :!echo "%:p" \| pbcopy<CR><CR>
+map <leader>cfp :!echo "%" \| pbcopy<CR><CR>
 
 " Remove highlight
 map <leader>nh :nohlsearch<CR>
@@ -236,14 +241,14 @@ inoremap <C-BS> <C-w>
 "" Theme
 ""
 
-if (has("nvim"))
+if (has('nvim'))
   "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
   let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 endif
 "For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
 "Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
 " < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
-if (has("termguicolors"))
+if (has('termguicolors'))
   set termguicolors
 endif
 
@@ -281,11 +286,11 @@ function! Lightlinefugitive() abort
   endif
   try
     if exists('*fugitive#head')
-      let head = fugitive#head()
+      let l:head = fugitive#head()
     else
       return ''
     endif
-    let b:lightline_fugitive = head
+    let b:lightline_fugitive = l:head
     let b:lightline_fugitive_ = reltime()
     return b:lightline_fugitive
   catch
@@ -302,8 +307,8 @@ endfunction
 ""
 
 fun! s:git_root()
-	let path = finddir(".git", expand("%:p:h").";")
-	return fnamemodify(substitute(path, ".git", "", ""), ":p:h")
+	let l:path = finddir('.git', expand('%:p:h').';')
+	return fnamemodify(substitute(l:path, '.git', '', ''), ':p:h')
 endfun
 
 
@@ -317,7 +322,7 @@ map <leader>a :GrepperRg<Space>
 " Quickfix Window
 nmap <leader>qf <Plug>QfCtoggle
 let g:qf_mapping_ack_style = 1
-autocmd! FileType qf noremap <Esc> :cclose<CR>
+au FileType qf noremap <Esc> :cclose<CR>
 
 " Nerdtree
 ""Open NERDTree if no files specified
@@ -336,7 +341,7 @@ map <leader>Q :bufdo Sayonara!<CR>
 " Fugitive mapping
 
 " make fugitive work on empty buffers
-autocmd BufWinEnter * if empty(expand('<afile>'))|call fugitive#detect(getcwd())|endif
+au BufWinEnter * if empty(expand('<afile>'))|call fugitive#detect(getcwd())|endif
 
 nmap <leader>gb :Gblame<CR>
 nmap <leader>gc :Gcommit<CR>
@@ -346,17 +351,17 @@ nmap <leader>gl :Glog<CR>
 nmap <leader>gw :Gbrowse<CR>
 
 function! PullCurrentBranch()
-  let branch = fugitive#head()
-  exe ":Git pull origin " . branch
+  let l:branch = fugitive#head()
+  exe ':Git pull origin ' . l:branch
 endfunction
 
 function! PushCurrentBranch()
-  let branch = fugitive#head()
-  exe ":Git push origin " . branch
+  let l:branch = fugitive#head()
+  exe ':Git push origin ' . l:branch
 endfunction
 
-nmap <leader>gp :call PullCurrentBranch()<CR>
-nmap <leader>gP :call PushCurrentBranch()<CR>
+nmap <leader>gP :call PullCurrentBranch()<CR>
+nmap <leader>gp :call PushCurrentBranch()<CR>
 
 " Git status hacks
 
@@ -364,13 +369,13 @@ nmap <leader>gs :Gtabedit :<CR>
 
 function! GStatusTabDiff()
   if has('multi_byte_encoding')
-    let colon = '\%(:\|\%uff1a\)'
+    let l:colon = '\%(:\|\%uff1a\)'
   else
-    let colon = ':'
+    let l:colon = ':'
   endif
-  let filename = matchstr(matchstr(getline(line('.')),'^#\t\zs.\{-\}\ze\%( ([^()[:digit:]]\+)\)\=$'), colon.' *\zs.*')
+  let l:filename = matchstr(matchstr(getline(line('.')),'^#\t\zs.\{-\}\ze\%( ([^()[:digit:]]\+)\)\=$'), l:colon.' *\zs.*')
   tabedit %
-  execute ':Gedit ' . filename
+  execute ':Gedit ' . l:filename
   Gvdiff
 endfunction
 autocmd FileType gitcommit noremap <buffer> d :call GStatusTabDiff()<CR>
@@ -400,7 +405,7 @@ let g:startify_list_order = [
 nnoremap <silent> <C-P> :exe 'Files ' . <SID>git_root()<CR>
 imap <c-x><c-l> <plug>(fzf-complete-line)
 map <leader>b :Buffers<CR>
-nnoremap <C-r> :BTags<CR>
+map <C-R> :BTags<CR>
 autocmd! FileType fzf tnoremap <buffer> <Esc> <c-c>
 let g:fzf_buffers_jump = 1  " [Buffers] Jump to the existing window if possible
 
@@ -416,9 +421,9 @@ map <silent> <leader>ft :TestFile<CR>
 
 if has('nvim')
   " run tests with :T
-  let test#strategy = "neoterm"
+  let test#strategy = 'neoterm'
 
-  let g:neoterm_position = "vertical"
+  let g:neoterm_position = 'vertical'
 
   " pretty much essential: by default in terminal mode, you have to press ctrl-\-n to get into normal mode
   " ain't nobody got time for that
@@ -432,9 +437,9 @@ let g:deoplete#enable_at_startup = 0
 set shortmess+=c
 "inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 "inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-let g:UltiSnipsExpandTrigger = "<Tab>"
-let g:UltiSnipsJumpForwardTrigger="<Tab>"
-let g:UltiSnipsJumpBackwardTrigger="<S-Tab>"
+let g:UltiSnipsExpandTrigger = '<Tab>'
+let g:UltiSnipsJumpForwardTrigger='<Tab>'
+let g:UltiSnipsJumpBackwardTrigger='<S-Tab>'
 "inoremap <silent> <c-u> <c-r>=cm#sources#ultisnips#trigger_or_popup("\<Plug>(ultisnips_expand)")<cr>
 
 " Smooth Scroll
