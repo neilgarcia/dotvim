@@ -1,3 +1,4 @@
+set encoding=utf-8
 call plug#begin('~/.vim/plugged')
   set encoding=utf-8
   scriptencoding utf-8
@@ -73,8 +74,8 @@ call plug#begin('~/.vim/plugged')
 call plug#end()
 
 " Set python path
-let g:python_host_prog  = '/usr/local/bin/python2'
-let g:python3_host_prog = '/usr/local/bin/python3'
+let g:python_host_prog  = '/usr/bin/python2'
+let g:python3_host_prog = '/usr/bin/python3'
 
 let g:mapleader      = ' '
 let g:maplocalleader = ' '
@@ -317,7 +318,9 @@ endfun
 let g:grepper = {}
 let g:grepper.dir = 'repo,file'
 let g:grepper.open = 0
-map <leader>a :GrepperRg<Space>
+let g:grepper.tools =
+  \ ['rg', 'git', 'grep']
+map <leader>a :Grepper<CR>
 
 " Quickfix Window
 nmap <leader>qf <Plug>QfCtoggle
