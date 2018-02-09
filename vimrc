@@ -1,17 +1,22 @@
-set encoding=utf-8
 call plug#begin('~/.vim/plugged')
-  set encoding=utf-8
   scriptencoding utf-8
 
   " Theme
   " Get object name for syntax highlighting
   " echom synIDattr(synID(line('.'),col('.'),0),'name')
-  Plug 'neilpeter08/onedark.vim'
-  Plug 'itchyny/lightline.vim'
+  " Plug 'itchyny/lightline.vim'
   Plug 'rakr/vim-one'
 
+
   " Auto completion
-  Plug 'roxma/nvim-completion-manager', {'do': 'npm install'}
+  if has('nvim')
+    Plug 'roxma/nvim-completion-manager', {'do': 'npm install'}
+    " Neovim completion manager
+    let g:endwise_no_mappings = 1
+    imap <C-X><CR>   <CR><Plug>AlwaysEnd
+    imap <expr> <CR> (pumvisible() ? "\<C-Y>\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd")
+  endif
+
   Plug 'SirVer/ultisnips'
   Plug 'honza/vim-snippets'
   Plug 'roxma/ncm-rct-complete'
@@ -30,12 +35,10 @@ call plug#begin('~/.vim/plugged')
   " File explorer
   Plug 'scrooloose/nerdtree'
 
-  "Plug 'neomake/neomake'
   Plug 'w0rp/ale'
   Plug 'tpope/vim-fugitive'
   Plug 'tpope/vim-commentary'
   Plug 'mhinz/vim-startify'
-  Plug 'mbbill/undotree'
   Plug 'ap/vim-buftabline'
   Plug 'tpope/vim-endwise'
   Plug 'mhinz/vim-grepper'
@@ -46,15 +49,12 @@ call plug#begin('~/.vim/plugged')
   Plug 'terryma/vim-smooth-scroll'
   Plug 'tpope/vim-surround'
   Plug 'ntpeters/vim-better-whitespace'
-  Plug 'ap/vim-css-color'
   Plug 'pangloss/vim-javascript'
   Plug 'mxw/vim-jsx'
   Plug 'easymotion/vim-easymotion'
   Plug 'idanarye/vim-merginal'
-  Plug 'wakatime/vim-wakatime'
   Plug 'ludovicchabant/vim-gutentags'
   Plug 'ryanoasis/vim-devicons'
-  Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'javascript.jsx'] }
   Plug 'mhinz/vim-sayonara'
   Plug 'tweekmonster/startuptime.vim'
   Plug 'junegunn/vim-easy-align'
@@ -68,14 +68,15 @@ call plug#begin('~/.vim/plugged')
   Plug 'nelstrom/vim-textobj-rubyblock'
   Plug 'maciej-ka/ZoomWin'
   Plug 'wellle/targets.vim'
-  Plug 'equalsraf/neovim-gui-shim'
   Plug 'tpope/vim-repeat'
   Plug 'tpope/tpope-vim-abolish'
+  Plug 'lambdalisue/gina.vim'
+  Plug 'Chiel92/vim-autoformat'
 call plug#end()
 
 " Set python path
-let g:python_host_prog  = '/usr/bin/python2'
-let g:python3_host_prog = '/usr/bin/python3'
+let g:python_host_prog  = '/usr/local/bin/python2'
+let g:python3_host_prog = '/usr/local/bin/python3'
 
 let g:mapleader      = ' '
 let g:maplocalleader = ' '
@@ -97,16 +98,16 @@ set ruler
 set cursorline
 set cursorcolumn
 set autoread
-au FocusGained,BufEnter * :silent! !
 set timeoutlen=500    " Dont wait too long for the next key press (useful for ambigous leader commands)
+set nocompatible
 
 ""
 "" Undo history
 ""
 
 if has('persistent_undo')
-  set undodir=~/.undodir/
-  set undofile
+ set undodir=~/.undodir/
+ set undofile
 endif
 
 ""
@@ -176,6 +177,23 @@ set directory=~/.tmp " Where to put swap files
 
 set tags=./tags,tags;/
 
+
+""
+"" Au Group
+""
+augroup autocommands
+    autocmd!
+    autocmd BufFilePost Merginal:* setlocal relativenumber
+    " autocmd BufEnter * EnableStripWhitespaceOnSave " strip whitespace on save
+    autocmd! FileType fzf tnoremap <buffer> <Esc> <c-c>
+    autocmd FileType gitcommit noremap <buffer> d :call GStatusTabDiff()<CR>
+    autocmd BufWinEnter * if empty(expand('<afile>'))|call fugitive#detect(getcwd())|endif
+    autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+    autocmd BufNewFile,BufRead *.jsx set filetype=javascript.jsx
+    autocmd FocusGained,BufEnter * :silent! !
+    autocmd FileType qf noremap <Esc> :cclose<CR>
+augroup END
+
 ""
 "" User defined commands
 ""
@@ -199,13 +217,10 @@ ca qt tabclose
 "nnoremap <C-]> g<C-]>
 
 " Redo
-map <C-y> :redo<CR>
+map U :redo<CR>
 
 " Make Y behave like other capitals
 nnoremap Y y$
-
-" Sane terminal binding
-tnoremap <Esc> <C-\><C-n>
 
 " Formats entire file
 nnoremap <leader>fef :normal! gg=G``<CR>
@@ -228,6 +243,7 @@ inoremap <silent> <C-S>         <C-O>:update<CR>
 " Copy file path easily for unit testing
 set clipboard=unnamedplus
 map <leader>cfp :!echo "%" \| pbcopy<CR><CR>
+map <leader>cfP :!echo "%:p" \| pbcopy<CR><CR>
 
 " Remove highlight
 map <leader>nh :nohlsearch<CR>
@@ -254,7 +270,7 @@ if (has('termguicolors'))
 endif
 
 set background=dark           " Enable dark background
-colorscheme one           " Set the colorscheme
+colorscheme one " Set the colorscheme
 set foldmethod=manual
 let g:lightline = {
   \ 'colorscheme': 'onedark',
@@ -315,27 +331,26 @@ endfun
 
 
 " Grepper
-let g:grepper = {}
+runtime plugin/grepper.vim
+
 let g:grepper.dir = 'repo,file'
-let g:grepper.open = 0
+let g:grepper.open = 1
 let g:grepper.tools =
   \ ['rg', 'git', 'grep']
-map <leader>a :Grepper<CR>
+
+let g:grepper.rg.grepprg .= ' --type-add slim:*.slim --type-add haml:*.haml -g "!{.git,node_modules,vendor,build,tmp,yarn.lock,*.sty}/*"'
+
+map <leader>a :GrepperRg<Space>
 
 " Quickfix Window
 nmap <leader>qf <Plug>QfCtoggle
 let g:qf_mapping_ack_style = 1
-au FileType qf noremap <Esc> :cclose<CR>
 
 " Nerdtree
-""Open NERDTree if no files specified
-"autocmd StdinReadPre * let s:std_in=1
-"autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 map <silent> <leader>e :NERDTreeFind<CR>
 map <silent> <leader>t :NERDTreeToggle<CR>
 
 " Close vim when nerdtree is the only window left
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 " Close buffer
 map <leader>q :Sayonara!<CR>
@@ -344,7 +359,6 @@ map <leader>Q :bufdo Sayonara!<CR>
 " Fugitive mapping
 
 " make fugitive work on empty buffers
-au BufWinEnter * if empty(expand('<afile>'))|call fugitive#detect(getcwd())|endif
 
 nmap <leader>gb :Gblame<CR>
 nmap <leader>gc :Gcommit<CR>
@@ -353,13 +367,18 @@ nmap <leader>gg :Ggrep
 nmap <leader>gl :Glog<CR>
 nmap <leader>gw :Gbrowse<CR>
 
+" Get current branch
+function! GitBranch()
+  return system("git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d '\n'")
+endfunction
+
 function! PullCurrentBranch()
-  let l:branch = fugitive#head()
+  let l:branch = GitBranch()
   exe ':Git pull origin ' . l:branch
 endfunction
 
 function! PushCurrentBranch()
-  let l:branch = fugitive#head()
+  let l:branch = GitBranch()
   exe ':Git push origin ' . l:branch
 endfunction
 
@@ -381,7 +400,6 @@ function! GStatusTabDiff()
   execute ':Gedit ' . l:filename
   Gvdiff
 endfunction
-autocmd FileType gitcommit noremap <buffer> d :call GStatusTabDiff()<CR>
 
 " startify
 let g:startify_change_to_dir = 0
@@ -400,24 +418,16 @@ let g:startify_list_order = [
 
 " FZF
 " --files: List files that would be searched but do not search
-" --no-ignore: Do not respect .gitignore, etc...
 " --hidden: Search hidden files and folders
 " --follow: Follow symlinks
 " --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
-"let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --follow --glob "!.git/*"'
-nnoremap <silent> <C-P> :exe 'Files ' . <SID>git_root()<CR>
-imap <c-x><c-l> <plug>(fzf-complete-line)
-map <leader>b :Buffers<CR>
-map <C-R> :BTags<CR>
-autocmd! FileType fzf tnoremap <buffer> <Esc> <c-c>
+let $FZF_DEFAULT_COMMAND = 'rg --files --no-ignore --hidden --follow --glob "!{.git,node_modules,vendor,build,tmp,yarn.lock,*.sty}/*"'
+
 let g:fzf_buffers_jump = 1  " [Buffers] Jump to the existing window if possible
 
-let g:rg_command = '
-  \ rg --column --line-number --no-heading --fixed-strings --ignore-case  --follow --color "always"
-  \ -g "*.{js,json,php,md,styl,pug,jade,config,py,cpp,c,go,hs,rb,conf,fa,lst}"
-  \ -g "!{.git,node_modules,vendor,build,yarn.lock,*.sty}/*" '
-
-command! -bang -nargs=* F call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
+nnoremap <silent> <C-P> :exe 'Files ' . <SID>git_root()<CR>
+nnoremap <leader>b :Buffers<CR>
+nnoremap <C-R> :BTags<CR>
 
 " Vim Test
 map <silent> <leader>ft :TestFile<CR>
@@ -443,6 +453,7 @@ set shortmess+=c
 let g:UltiSnipsExpandTrigger = '<Tab>'
 let g:UltiSnipsJumpForwardTrigger='<Tab>'
 let g:UltiSnipsJumpBackwardTrigger='<S-Tab>'
+let g:UltiSnipsSnippetDirectories = ['~/.config/nvim/UltiSnips', 'UltiSnips']
 "inoremap <silent> <c-u> <c-r>=cm#sources#ultisnips#trigger_or_popup("\<Plug>(ultisnips_expand)")<cr>
 
 " Smooth Scroll
@@ -452,11 +463,9 @@ nnoremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 30, 4)<CR>
 nnoremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 30, 4)<CR>
 
 " Better whitespace
-autocmd BufEnter * EnableStripWhitespaceOnSave " strip whitespace on save
 
 " Merginal
 noremap <leader>m :Merginal<CR>
-autocmd BufFilePost Merginal:* setlocal relativenumber
 
 " Webdev icons
 let g:WebDevIconsUnicodeDecorateFolderNodes = 1
@@ -465,16 +474,11 @@ let g:DevIconsEnableFoldersOpenClose = 1
 " Easy motion
 map <Leader> <Plug>(easymotion-prefix)
 
-" Neovim completion manager
-let g:endwise_no_mappings = 1
-imap <C-X><CR>   <CR><Plug>AlwaysEnd
-imap <expr> <CR> (pumvisible() ? "\<C-Y>\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd")
 
-" Tarbar
-nmap <F8> :TagbarToggle<CR>
-
-" Gutentags
+" " Gutentags
 let g:gutentags_define_advanced_commands = 1
+nmap <C-]> g<C-]>
+
 
 " Easy Align
 " Start interactive EasyAlign in visual mode (e.g. vipga)
@@ -487,11 +491,6 @@ nmap ga <Plug>(EasyAlign)
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_enter = 0
 
-" lint JSX with eslint
-augroup FiletypeGroup
-    autocmd!
-    au BufNewFile,BufRead *.jsx set filetype=javascript.jsx
-augroup END
 let g:ale_linters = {
 \  'jsx':        ['eslint'],
 \  'javascript': ['eslint']
@@ -517,3 +516,35 @@ let g:EasyMotion_smartcase = 1
 " JK motions: Line motions
 map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
+
+function! StatuslineGit()
+  let l:branchname = GitBranch()
+  return strlen(l:branchname) > 0?'  '.l:branchname.' ':''
+endfunction
+
+set statusline= 
+set statusline+=%#PmenuSel#
+set statusline+=%{StatuslineGit()}
+set statusline+=%#LineNr#
+set statusline+=\ %f
+set statusline+=%m
+set statusline+=%=
+set statusline+=%#CursorColumn#
+set statusline+=\ %y
+set statusline+=\ %{&fileencoding?&fileencoding:&encoding}
+set statusline+=\[%{&fileformat}\]
+set statusline+=\ %p%%
+set statusline+=\ %l:%c
+set statusline+=\ 
+
+if has('nvim')
+    " Sane terminal bindings
+    tnoremap <Esc> <C-\><C-n>
+    tnoremap <leader><esc> <esc>
+    " nnoremap <bs> <c-w>h
+    let g:terminal_scrollback_buffer_size = 10000
+    let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+    set inccommand=nosplit
+else
+    set encoding=utf-8
+endif
