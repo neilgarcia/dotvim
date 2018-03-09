@@ -104,13 +104,11 @@ map <leader>so :source $MYVIMRC<CR>
 " Basic Configs
 set hidden
 set number            " Show line number
-set relativenumber    " Show relative number
 set ruler
 set cursorline
 set cursorcolumn
 set autoread
 set timeoutlen=500    " Dont wait too long for the next key press (useful for ambigous leader commands)
-set nocompatible
 
 ""
 "" Undo history
@@ -282,6 +280,7 @@ endif
 
 set background=dark           " Enable dark background
 colorscheme one " Set the colorscheme
+syntax sync minlines=200
 set foldmethod=manual
 let g:lightline = {
   \ 'colorscheme': 'onedark',
@@ -432,7 +431,7 @@ let g:startify_list_order = [
 " --hidden: Search hidden files and folders
 " --follow: Follow symlinks
 " --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
-let $FZF_DEFAULT_COMMAND = 'rg --files --no-ignore --hidden --follow --glob "!{.git,node_modules,vendor,build,tmp,yarn.lock,*.sty}/*"'
+let $FZF_DEFAULT_COMMAND = 'rg --files --no-ignore --hidden --follow -g "!{.git,node_modules,vendor,build,tmp,yarn.lock,*.sty}/*"'
 
 let g:fzf_buffers_jump = 1  " [Buffers] Jump to the existing window if possible
 
@@ -556,3 +555,21 @@ endif
 
 nnoremap H :HisTravBack<CR>
 nnoremap L :HisTravForward<CR>
+
+" Find imported path
+set path=.,src,node_nodules,app/client
+set suffixesadd=.js,.jsx
+
+function! LoadMainNodeModule(fname)
+    let nodeModules = "./node_modules/"
+    let packageJsonPath = nodeModules . a:fname . "/package.json"
+
+    if filereadable(packageJsonPath)
+        return nodeModules . a:fname . "/" . json_decode(join(readfile(packageJsonPath))).main
+    else
+        return nodeModules . a:fname
+    endif
+endfunction
+
+set includeexpr=LoadMainNodeModule(v:fname)
+nnoremap <C-w>f :vertical wincmd f<CR>
