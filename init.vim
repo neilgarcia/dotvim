@@ -5,6 +5,7 @@ call plug#begin('~/.vim/plugged')
   " Get object name for syntax highlighting
   " echom synIDattr(synID(line('.'),col('.'),0),'name')
   Plug 'rakr/vim-one'
+  Plug 'tpope/vim-scriptease'
 
 
   " Auto completion
@@ -79,14 +80,12 @@ if !exists("g:os")
 endif
 
 " Set python path
-if has("gui_running")
-    if g:os == "Darwin"
-      let g:python_host_prog  = '/usr/local/bin/python2'
-      let g:python3_host_prog = '/usr/local/bin/python3'
-    elseif g:os == "Linux"
-      let g:python_host_prog  = '/usr/bin/python2'
-      let g:python3_host_prog = '/usr/bin/python3'
-    endif
+if g:os == "Darwin"
+  let g:python_host_prog  = '/usr/local/bin/python2'
+  let g:python3_host_prog = '/usr/local/bin/python3'
+elseif g:os == "Linux"
+  let g:python_host_prog  = '/usr/bin/python2'
+  let g:python3_host_prog = '/usr/bin/python3'
 endif
 
 let g:mapleader      = ' '
@@ -96,6 +95,8 @@ noremap , <Space>
 syntax on
 filetype plugin on
 filetype plugin indent on
+" Split find
+nnoremap <C-w>f :vertical wincmd f<CR>
 " Edit and source vimrc
 map <leader>vr :tabedit $MYVIMRC<CR>
 map <leader>so :source $MYVIMRC<CR>
@@ -198,7 +199,7 @@ augroup autocommands
     autocmd FileType gitcommit noremap <buffer> d :call GStatusTabDiff()<CR>
     autocmd BufWinEnter * if empty(expand('<afile>'))|call fugitive#detect(getcwd())|endif
     autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-    autocmd BufNewFile,BufRead *.jsx set filetype=javascript.jsx
+    autocmd BufNewFile,BufRead *.jsx set filetype=javascript
     autocmd FocusGained,BufEnter * :silent! !
     autocmd FileType qf noremap <Esc> :cclose<CR>
 augroup END
@@ -561,21 +562,3 @@ endif
 
 nnoremap H :HisTravBack<CR>
 nnoremap L :HisTravForward<CR>
-
-" Find imported path
-set path=.,src,node_nodules,app/client
-set suffixesadd=.js,.jsx
-
-function! LoadMainNodeModule(fname)
-    let nodeModules = "./node_modules/"
-    let packageJsonPath = nodeModules . a:fname . "/package.json"
-
-    if filereadable(packageJsonPath)
-        return nodeModules . a:fname . "/" . json_decode(join(readfile(packageJsonPath))).main
-    else
-        return nodeModules . a:fname
-    endif
-endfunction
-
-set includeexpr=LoadMainNodeModule(v:fname)
-nnoremap <C-w>f :vertical wincmd f<CR>
