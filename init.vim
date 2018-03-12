@@ -426,12 +426,18 @@ let g:startify_list_order = [
       \ 'dir',
       \ ]
 
-" FZF
+" Ripgrep
 " --files: List files that would be searched but do not search
 " --hidden: Search hidden files and folders
 " --follow: Follow symlinks
 " --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
-let $FZF_DEFAULT_COMMAND = 'rg --files --no-ignore --hidden --follow -g "!{.git,node_modules,vendor,build,tmp,yarn.lock,*.sty}/*"'
+" let $FZF_DEFAULT_COMMAND = 'rg --files --no-ignore --hidden --follow -g "!{.git,node_modules,vendor,build,tmp,yarn.lock,*.sty}/*"'
+
+" Fd
+" --type file: only list files as result
+" --no-ignore: do not ignore .gitignore
+" --exclude: manually exclude folders
+let $FZF_DEFAULT_COMMAND = "fd . --type file --hidden --no-ignore --exclude '{.git,doc*/,node_modules,vendor,build,tmp,*.sty}'"
 
 let g:fzf_buffers_jump = 1  " [Buffers] Jump to the existing window if possible
 
