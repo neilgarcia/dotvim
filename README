@@ -20,3 +20,6 @@ Install Ctags
   1. sudo apt-get install exuberant-ctags
   2. ctags -R .
   
+
+" Generate jsx tags, I can use find but prefers https://github.com/sharkdp/fd
+fd ".*\.jsx$" -t f -E "./node_modules/*" --exec jsctags {} -f \; | sed '/^$/d' | sort > tags
