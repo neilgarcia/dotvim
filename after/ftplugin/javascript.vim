@@ -1,6 +1,7 @@
 " Find imported path
 setlocal path=.,src,node_nodules,app/client
 setlocal suffixesadd=.js,.jsx
+setlocal tags=./jstags/tags;
 
 function! LoadMainNodeModule(fname)
     let nodeModules = "./node_modules/"
@@ -14,4 +15,3 @@ function! LoadMainNodeModule(fname)
 endfunction
 
 setlocal includeexpr=LoadMainNodeModule(v:fname)
-nnoremap <C-w>f :vertical wincmd f<CR>

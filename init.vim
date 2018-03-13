@@ -5,8 +5,6 @@ call plug#begin('~/.vim/plugged')
   " Get object name for syntax highlighting
   " echom synIDattr(synID(line('.'),col('.'),0),'name')
   Plug 'rakr/vim-one'
-  Plug 'tpope/vim-scriptease'
-
 
   " Auto completion
   if has('nvim')
@@ -95,8 +93,7 @@ noremap , <Space>
 syntax on
 filetype plugin on
 filetype plugin indent on
-" Split find
-nnoremap <C-w>f :vertical wincmd f<CR>
+
 " Edit and source vimrc
 map <leader>vr :tabedit $MYVIMRC<CR>
 map <leader>so :source $MYVIMRC<CR>

@@ -4,9 +4,9 @@ call plug#begin('~/.vim/plugged')
   " Theme
   " Get object name for syntax highlighting
   " echom synIDattr(synID(line('.'),col('.'),0),'name')
-  " Plug 'itchyny/lightline.vim'
   Plug 'rakr/vim-one'
-
+  Plug 'ayu-theme/ayu-vim'
+  let ayucolor="dark"
 
   " Auto completion
   if has('nvim')
@@ -39,27 +39,23 @@ call plug#begin('~/.vim/plugged')
   Plug 'tpope/vim-fugitive'
   Plug 'tpope/vim-commentary'
   Plug 'mhinz/vim-startify'
-  Plug 'ap/vim-buftabline'
   Plug 'tpope/vim-endwise'
   Plug 'mhinz/vim-grepper'
-  Plug 'terryma/vim-multiple-cursors'
   Plug 'tpope/vim-rails'
   Plug 'vim-ruby/vim-ruby'
   Plug 'slim-template/vim-slim'
-  Plug 'terryma/vim-smooth-scroll'
   Plug 'tpope/vim-surround'
   Plug 'ntpeters/vim-better-whitespace'
   Plug 'pangloss/vim-javascript'
   Plug 'mxw/vim-jsx'
   Plug 'easymotion/vim-easymotion'
-  Plug 'idanarye/vim-merginal'
   Plug 'ludovicchabant/vim-gutentags'
-  Plug 'ryanoasis/vim-devicons'
   Plug 'mhinz/vim-sayonara'
   Plug 'tweekmonster/startuptime.vim'
   Plug 'junegunn/vim-easy-align'
   Plug 'Konfekt/FastFold'
   Plug 'AndrewRadev/linediff.vim'
+  Plug 'ckarnell/history-traverse'
 
   " Text object
   Plug 'kana/vim-textobj-function'
@@ -74,9 +70,23 @@ call plug#begin('~/.vim/plugged')
   Plug 'Chiel92/vim-autoformat'
 call plug#end()
 
+" OS Specific commands
+if !exists("g:os")
+    if has("win64") || has("win32") || has("win16")
+        let g:os = "Windows"
+    else
+        let g:os = substitute(system('uname'), '\n', '', '')
+    endif
+endif
+
 " Set python path
-let g:python_host_prog  = '/usr/local/bin/python2'
-let g:python3_host_prog = '/usr/local/bin/python3'
+if g:os == "Darwin"
+  let g:python_host_prog  = '/usr/local/bin/python2'
+  let g:python3_host_prog = '/usr/local/bin/python3'
+elseif g:os == "Linux"
+  let g:python_host_prog  = '/usr/bin/python2'
+  let g:python3_host_prog = '/usr/bin/python3'
+endif
 
 let g:mapleader      = ' '
 let g:maplocalleader = ' '
@@ -85,6 +95,7 @@ noremap , <Space>
 syntax on
 filetype plugin on
 filetype plugin indent on
+
 " Edit and source vimrc
 map <leader>vr :tabedit $MYVIMRC<CR>
 map <leader>so :source $MYVIMRC<CR>
@@ -93,13 +104,11 @@ map <leader>so :source $MYVIMRC<CR>
 " Basic Configs
 set hidden
 set number            " Show line number
-set relativenumber    " Show relative number
 set ruler
 set cursorline
 set cursorcolumn
 set autoread
 set timeoutlen=500    " Dont wait too long for the next key press (useful for ambigous leader commands)
-set nocompatible
 
 ""
 "" Undo history
@@ -189,7 +198,7 @@ augroup autocommands
     autocmd FileType gitcommit noremap <buffer> d :call GStatusTabDiff()<CR>
     autocmd BufWinEnter * if empty(expand('<afile>'))|call fugitive#detect(getcwd())|endif
     autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-    autocmd BufNewFile,BufRead *.jsx set filetype=javascript.jsx
+    autocmd BufNewFile,BufRead *.jsx set filetype=javascript
     autocmd FocusGained,BufEnter * :silent! !
     autocmd FileType qf noremap <Esc> :cclose<CR>
 augroup END
@@ -270,7 +279,8 @@ if (has('termguicolors'))
 endif
 
 set background=dark           " Enable dark background
-colorscheme one " Set the colorscheme
+colorscheme ayu " Set the colorscheme
+syntax sync minlines=200
 set foldmethod=manual
 let g:lightline = {
   \ 'colorscheme': 'onedark',
@@ -324,8 +334,8 @@ endfunction
 ""
 
 fun! s:git_root()
-	let l:path = finddir('.git', expand('%:p:h').';')
-	return fnamemodify(substitute(l:path, '.git', '', ''), ':p:h')
+  let l:path = finddir('.git', expand('%:p:h').';')
+  return fnamemodify(substitute(l:path, '.git', '', ''), ':p:h')
 endfun
 
 
@@ -416,12 +426,18 @@ let g:startify_list_order = [
       \ 'dir',
       \ ]
 
-" FZF
+" Ripgrep
 " --files: List files that would be searched but do not search
 " --hidden: Search hidden files and folders
 " --follow: Follow symlinks
 " --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
-let $FZF_DEFAULT_COMMAND = 'rg --files --no-ignore --hidden --follow --glob "!{.git,node_modules,vendor,build,tmp,yarn.lock,*.sty}/*"'
+" let $FZF_DEFAULT_COMMAND = 'rg --files --no-ignore --hidden --follow -g "!{.git,node_modules,vendor,build,tmp,yarn.lock,*.sty}/*"'
+
+" Fd
+" --type file: only list files as result
+" --no-ignore: do not ignore .gitignore
+" --exclude: manually exclude folders
+let $FZF_DEFAULT_COMMAND = "fd . --type file --hidden --no-ignore --exclude '{.git,doc*/,node_modules,vendor,build,tmp,*.sty}'"
 
 let g:fzf_buffers_jump = 1  " [Buffers] Jump to the existing window if possible
 
@@ -455,12 +471,6 @@ let g:UltiSnipsJumpForwardTrigger='<Tab>'
 let g:UltiSnipsJumpBackwardTrigger='<S-Tab>'
 let g:UltiSnipsSnippetDirectories = ['~/.config/nvim/UltiSnips', 'UltiSnips']
 "inoremap <silent> <c-u> <c-r>=cm#sources#ultisnips#trigger_or_popup("\<Plug>(ultisnips_expand)")<cr>
-
-" Smooth Scroll
-nnoremap <silent> <c-u> :call smooth_scroll#up(&scroll*2, 30, 4)<CR>
-nnoremap <silent> <c-d> :call smooth_scroll#down(&scroll*2, 30, 4)<CR>
-nnoremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 30, 4)<CR>
-nnoremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 30, 4)<CR>
 
 " Better whitespace
 
@@ -522,7 +532,7 @@ function! StatuslineGit()
   return strlen(l:branchname) > 0?'  '.l:branchname.' ':''
 endfunction
 
-set statusline= 
+set statusline=
 set statusline+=%#PmenuSel#
 set statusline+=%{StatuslineGit()}
 set statusline+=%#LineNr#
@@ -535,7 +545,7 @@ set statusline+=\ %{&fileencoding?&fileencoding:&encoding}
 set statusline+=\[%{&fileformat}\]
 set statusline+=\ %p%%
 set statusline+=\ %l:%c
-set statusline+=\ 
+set statusline+=\
 
 if has('nvim')
     " Sane terminal bindings
@@ -548,3 +558,7 @@ if has('nvim')
 else
     set encoding=utf-8
 endif
+
+nnoremap H :HisTravBack<CR>
+nnoremap L :HisTravForward<CR>
+
