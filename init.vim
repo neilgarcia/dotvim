@@ -5,6 +5,7 @@ call plug#begin('~/.vim/plugged')
   " Get object name for syntax highlighting
   " echom synIDattr(synID(line('.'),col('.'),0),'name')
   Plug 'rakr/vim-one'
+  Plug 'asilvadesigns/atom-theif'
 
   " Auto completion
   if has('nvim')
@@ -31,7 +32,9 @@ call plug#begin('~/.vim/plugged')
   Plug 'kassio/neoterm'
 
   " File explorer
-  Plug 'scrooloose/nerdtree'
+  " Plug 'scrooloose/nerdtree'
+  Plug 'Shougo/unite.vim'
+  Plug 'Shougo/vimfiler.vim'
 
   Plug 'w0rp/ale'
   Plug 'tpope/vim-fugitive'
@@ -46,6 +49,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'ntpeters/vim-better-whitespace'
   Plug 'pangloss/vim-javascript'
   Plug 'mxw/vim-jsx'
+  Plug 'MaxMEllon/vim-jsx-pretty'
   Plug 'easymotion/vim-easymotion'
   Plug 'ludovicchabant/vim-gutentags'
   Plug 'mhinz/vim-sayonara'
@@ -195,7 +199,7 @@ augroup autocommands
     autocmd! FileType fzf tnoremap <buffer> <Esc> <c-c>
     autocmd FileType gitcommit noremap <buffer> d :call GStatusTabDiff()<CR>
     autocmd BufWinEnter * if empty(expand('<afile>'))|call fugitive#detect(getcwd())|endif
-    autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+    " autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
     autocmd BufNewFile,BufRead *.jsx set filetype=javascript
     autocmd FocusGained,BufEnter * :silent! !
     autocmd FileType qf noremap <Esc> :cclose<CR>
@@ -354,11 +358,37 @@ map <leader>a :GrepperRg<Space>
 nmap <leader>qf <Plug>QfCtoggle
 let g:qf_mapping_ack_style = 1
 
-" Nerdtree
-map <silent> <leader>e :NERDTreeFind<CR>
-map <silent> <leader>t :NERDTreeToggle<CR>
+" " Nerdtree
+" map <silent> <leader>e :NERDTreeFind<CR>
+" map <silent> <leader>t :NERDTreeToggle<CR>
 
-" Close vim when nerdtree is the only window left
+" VimFiler
+set fillchars=vert:│,fold:─
+let g:loaded_netrwPlugin = 1
+let g:vimfiler_tree_leaf_icon = ""
+let g:vimfiler_tree_opened_icon = "▼"
+let g:vimfiler_tree_closed_icon = "▷"
+let g:vimfiler_as_default_explorer = 1
+
+
+nnoremap <silent><leader>t :VimFiler -explorer -winwidth=40<cr>
+nnoremap <silent><leader><space> :VimFilerBufferDir -explorer<cr>
+
+augroup ps_vimfiler
+  au!
+  au FileType vimfiler call s:vimfiler_settings()
+  autocmd FileType vimfiler nunmap <buffer> <C-l>
+  autocmd FileType vimfiler nunmap <buffer> l
+  autocmd FileType vimfiler nmap <silent><buffer><expr> <CR> vimfiler#smart_cursor_map(
+  \ "\<Plug>(vimfiler_expand_tree)",
+  \ "\<Plug>(vimfiler_edit_file)")
+augroup END
+
+function! s:vimfiler_settings()
+		nnoremap <silent><buffer><expr> v  vimfiler#do_switch_action('vsplit')
+		nnoremap <silent><buffer><expr> s  vimfiler#do_switch_action('split')
+endfunction
+
 
 " Close buffer
 map <leader>q :Sayonara!<CR>
