@@ -362,34 +362,6 @@ let g:qf_mapping_ack_style = 1
 " map <silent> <leader>e :NERDTreeFind<CR>
 " map <silent> <leader>t :NERDTreeToggle<CR>
 
-" VimFiler
-set fillchars=vert:│,fold:─
-let g:loaded_netrwPlugin = 1
-let g:vimfiler_tree_leaf_icon = ""
-let g:vimfiler_tree_opened_icon = "▼"
-let g:vimfiler_tree_closed_icon = "▷"
-let g:vimfiler_as_default_explorer = 1
-
-
-nnoremap <silent><leader>t :VimFiler -explorer -winwidth=40<cr>
-nnoremap <silent><leader><space> :VimFilerBufferDir -explorer<cr>
-
-augroup ps_vimfiler
-  au!
-  au FileType vimfiler call s:vimfiler_settings()
-  autocmd FileType vimfiler nunmap <buffer> <C-l>
-  autocmd FileType vimfiler nunmap <buffer> l
-  autocmd FileType vimfiler nmap <silent><buffer><expr> <CR> vimfiler#smart_cursor_map(
-  \ "\<Plug>(vimfiler_expand_tree)",
-  \ "\<Plug>(vimfiler_edit_file)")
-augroup END
-
-function! s:vimfiler_settings()
-		nnoremap <silent><buffer><expr> v  vimfiler#do_switch_action('vsplit')
-		nnoremap <silent><buffer><expr> s  vimfiler#do_switch_action('split')
-endfunction
-
-
 " Close buffer
 map <leader>q :Sayonara!<CR>
 map <leader>Q :bufdo Sayonara!<CR>
