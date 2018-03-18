@@ -43,6 +43,7 @@ augroup ps_vimfiler
   au!
   au FileType vimfiler call s:vimfiler_settings()
   autocmd FileType vimfiler nunmap <buffer> <C-l>
+  autocmd FileType vimfiler nunmap <buffer> h
   autocmd FileType vimfiler nunmap <buffer> l
   autocmd FileType vimfiler nmap <silent><buffer><expr> <CR> vimfiler#smart_cursor_map(
   \ "\<Plug>(vimfiler_expand_tree)",

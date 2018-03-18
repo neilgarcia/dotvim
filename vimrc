@@ -15,6 +15,7 @@ call plug#begin('~/.vim/plugged')
     imap <expr> <CR> (pumvisible() ? "\<C-Y>\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd")
   endif
 
+  " Autocomplete
   Plug 'SirVer/ultisnips'
   Plug 'honza/vim-snippets'
   Plug 'roxma/ncm-rct-complete'
@@ -31,54 +32,53 @@ call plug#begin('~/.vim/plugged')
   Plug 'kassio/neoterm'
 
   " File explorer
-  " Plug 'scrooloose/nerdtree'
   Plug 'Shougo/unite.vim'
   Plug 'Shougo/vimfiler.vim'
 
+  " Tag generation
+  Plug 'ludovicchabant/vim-gutentags'
+
+  " Linting
   Plug 'w0rp/ale'
+
+  " Git
   Plug 'tpope/vim-fugitive'
-  Plug 'tpope/vim-commentary'
-  Plug 'mhinz/vim-startify'
-  Plug 'tpope/vim-endwise'
-  Plug 'mhinz/vim-grepper'
-  Plug 'tpope/vim-rails'
+
+  "Language specific
   Plug 'vim-ruby/vim-ruby'
   Plug 'slim-template/vim-slim'
-  Plug 'tpope/vim-surround'
-  Plug 'ntpeters/vim-better-whitespace'
+  Plug 'tpope/vim-rails'
   Plug 'pangloss/vim-javascript'
   Plug 'mxw/vim-jsx'
   Plug 'MaxMEllon/vim-jsx-pretty'
-  Plug 'easymotion/vim-easymotion'
-  Plug 'ludovicchabant/vim-gutentags'
-  Plug 'mhinz/vim-sayonara'
-  Plug 'tweekmonster/startuptime.vim'
-  Plug 'junegunn/vim-easy-align'
-  Plug 'Konfekt/FastFold'
-  Plug 'AndrewRadev/linediff.vim'
-  Plug 'ckarnell/history-traverse'
 
   " Text object
   Plug 'kana/vim-textobj-function'
   Plug 'thinca/vim-textobj-function-javascript'
   Plug 'kana/vim-textobj-user'
   Plug 'nelstrom/vim-textobj-rubyblock'
-  Plug 'maciej-ka/ZoomWin'
   Plug 'wellle/targets.vim'
+
+  " Extras
   Plug 'tpope/vim-repeat'
   Plug 'tpope/tpope-vim-abolish'
-  Plug 'lambdalisue/gina.vim'
-  Plug 'Chiel92/vim-autoformat'
+  Plug 'tpope/vim-commentary'
+  Plug 'mhinz/vim-startify'
+  Plug 'tpope/vim-endwise'
+  Plug 'mhinz/vim-grepper'
+  Plug 'tpope/vim-surround'
+  Plug 'ntpeters/vim-better-whitespace'
+  Plug 'easymotion/vim-easymotion'
+  Plug 'mhinz/vim-sayonara'
+  Plug 'junegunn/vim-easy-align'
+  Plug 'Konfekt/FastFold'
+  Plug 'AndrewRadev/linediff.vim'
+
+
 call plug#end()
 
 " OS Specific commands
-if !exists("g:os")
-    if has("win64") || has("win32") || has("win16")
-        let g:os = "Windows"
-    else
-        let g:os = substitute(system('uname'), '\n', '', '')
-    endif
-endif
+let g:os = substitute(system('uname'), '\n', '', '')
 
 " Set python path
 if g:os == "Darwin"
@@ -151,28 +151,6 @@ set incsearch   " incremental searching
 set ignorecase  " searches are case insensitive...
 set smartcase   " ... unless they contain at least one capital letter
 
-
-""
-"" Wild settings
-""
-
-" Disable output and VCS files
-set wildignore+=*.o,*.out,*.obj,.git,*.rbc,*.rbo,*.class,.svn,*.gem
-
-" Disable archive files
-set wildignore+=*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz
-
-" Ignore bundler and sass cache
-set wildignore+=*/vendor/gems/*,*/vendor/cache/*,*/.bundle/*,*/.sass-cache/*
-
-" Ignore librarian-chef, vagrant, test-kitchen and Berkshelf cache
-set wildignore+=*/tmp/librarian/*,*/.vagrant/*,*/.kitchen/*,*/vendor/cookbooks/*
-
-" Ignore rails temporary asset caches
-set wildignore+=*/tmp/cache/assets/*/sprockets/*,*/tmp/cache/assets/*/sass/*
-
-" Disable temp and backup files
-set wildignore+=*.swp,*~,._*
 
 ""
 "" Backup and swp files
@@ -283,52 +261,7 @@ set background=dark           " Enable dark background
 colorscheme one " Set the colorscheme
 syntax sync minlines=200
 set foldmethod=manual
-let g:lightline = {
-  \ 'colorscheme': 'onedark',
-  \ 'active': {
-  \   'left': [ [ 'mode', 'paste' ],
-  \             [ 'fugitive', 'readonly', 'filepath', 'modified' ] ],
-  \   'right': [ [ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
-  \ },
-  \ 'component': {
-  \   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}',
-  \ },
-  \ 'component_visible_condition': {
-  \   'readonly': '(&filetype!="help"&& &readonly)',
-  \   'modified': '(&filetype!="help"&&(&modified||!&modifiable))',
-  \ },
-  \ 'component_function': {
-  \   'fugitive': 'Lightlinefugitive',
-  \   'filepath': 'Lightlinefilepath'
-  \ },
-  \ 'separator': { 'left': '', 'right': '' },
-  \ 'subseparator': { 'left': '', 'right': '' }
-  \ }
 
-function! Lightlinefugitive() abort
-  if &filetype ==# 'help'
-    return ''
-  endif
-  if has_key(b:, 'lightline_fugitive') && reltimestr(reltime(b:lightline_fugitive_)) =~# '^\s*0\.[0-5]'
-    return b:lightline_fugitive
-  endif
-  try
-    if exists('*fugitive#head')
-      let l:head = fugitive#head()
-    else
-      return ''
-    endif
-    let b:lightline_fugitive = l:head
-    let b:lightline_fugitive_ = reltime()
-    return b:lightline_fugitive
-  catch
-  endtry
-  return ''
-endfunction
-
-function! Lightlinefilepath()
-  return @%
-endfunction
 
 ""
 "" Plugins
