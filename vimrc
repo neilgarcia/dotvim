@@ -5,8 +5,6 @@ call plug#begin('~/.vim/plugged')
   " Get object name for syntax highlighting
   " echom synIDattr(synID(line('.'),col('.'),0),'name')
   Plug 'rakr/vim-one'
-  Plug 'ayu-theme/ayu-vim'
-  let ayucolor="dark"
 
   " Auto completion
   if has('nvim')
@@ -33,7 +31,9 @@ call plug#begin('~/.vim/plugged')
   Plug 'kassio/neoterm'
 
   " File explorer
-  Plug 'scrooloose/nerdtree'
+  " Plug 'scrooloose/nerdtree'
+  Plug 'Shougo/unite.vim'
+  Plug 'Shougo/vimfiler.vim'
 
   Plug 'w0rp/ale'
   Plug 'tpope/vim-fugitive'
@@ -48,6 +48,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'ntpeters/vim-better-whitespace'
   Plug 'pangloss/vim-javascript'
   Plug 'mxw/vim-jsx'
+  Plug 'MaxMEllon/vim-jsx-pretty'
   Plug 'easymotion/vim-easymotion'
   Plug 'ludovicchabant/vim-gutentags'
   Plug 'mhinz/vim-sayonara'
@@ -197,7 +198,7 @@ augroup autocommands
     autocmd! FileType fzf tnoremap <buffer> <Esc> <c-c>
     autocmd FileType gitcommit noremap <buffer> d :call GStatusTabDiff()<CR>
     autocmd BufWinEnter * if empty(expand('<afile>'))|call fugitive#detect(getcwd())|endif
-    autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+    " autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
     autocmd BufNewFile,BufRead *.jsx set filetype=javascript
     autocmd FocusGained,BufEnter * :silent! !
     autocmd FileType qf noremap <Esc> :cclose<CR>
@@ -279,7 +280,7 @@ if (has('termguicolors'))
 endif
 
 set background=dark           " Enable dark background
-colorscheme ayu " Set the colorscheme
+colorscheme one " Set the colorscheme
 syntax sync minlines=200
 set foldmethod=manual
 let g:lightline = {
@@ -334,8 +335,8 @@ endfunction
 ""
 
 fun! s:git_root()
-  let l:path = finddir('.git', expand('%:p:h').';')
-  return fnamemodify(substitute(l:path, '.git', '', ''), ':p:h')
+	let l:path = finddir('.git', expand('%:p:h').';')
+	return fnamemodify(substitute(l:path, '.git', '', ''), ':p:h')
 endfun
 
 
@@ -356,11 +357,9 @@ map <leader>a :GrepperRg<Space>
 nmap <leader>qf <Plug>QfCtoggle
 let g:qf_mapping_ack_style = 1
 
-" Nerdtree
-map <silent> <leader>e :NERDTreeFind<CR>
-map <silent> <leader>t :NERDTreeToggle<CR>
-
-" Close vim when nerdtree is the only window left
+" " Nerdtree
+" map <silent> <leader>e :NERDTreeFind<CR>
+" map <silent> <leader>t :NERDTreeToggle<CR>
 
 " Close buffer
 map <leader>q :Sayonara!<CR>
@@ -561,4 +560,3 @@ endif
 
 nnoremap H :HisTravBack<CR>
 nnoremap L :HisTravForward<CR>
-
