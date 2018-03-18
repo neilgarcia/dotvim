@@ -9,6 +9,8 @@ call plug#begin('~/.vim/plugged')
   " Auto completion
   if has('nvim')
     Plug 'roxma/nvim-completion-manager', {'do': 'npm install'}
+    Plug 'roxma/ncm-rct-complete'
+    Plug 'roxma/nvim-cm-tern', {'do': 'npm install'}
     " Neovim completion manager
     let g:endwise_no_mappings = 1
     imap <C-X><CR>   <CR><Plug>AlwaysEnd
@@ -18,8 +20,6 @@ call plug#begin('~/.vim/plugged')
   " Autocomplete
   Plug 'SirVer/ultisnips'
   Plug 'honza/vim-snippets'
-  Plug 'roxma/ncm-rct-complete'
-  Plug 'roxma/nvim-cm-tern', {'do': 'npm install'}
   Plug 'othree/csscomplete.vim'
 
   " FZF
@@ -79,13 +79,14 @@ call plug#end()
 
 " OS Specific commands
 let g:os = substitute(system('uname'), '\n', '', '')
+let g:os = substitute(system('uname'), '\n', '', '')
 
 " Set python path
 if g:os == "Darwin"
-  let g:python_host_prog  = '/usr/local/bin/python2'
+  let g:python_host_prog  = '/usr/local/bin/python'
   let g:python3_host_prog = '/usr/local/bin/python3'
 elseif g:os == "Linux"
-  let g:python_host_prog  = '/usr/bin/python2'
+  let g:python_host_prog  = '/usr/bin/python'
   let g:python3_host_prog = '/usr/bin/python3'
 endif
 
