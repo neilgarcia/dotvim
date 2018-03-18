@@ -142,7 +142,6 @@ set listchars+=precedes:<         " The character to show in the last column whe
 " off and the line continues beyond the left of the screen
 
 
-
 ""
 "" Searching
 ""
@@ -236,9 +235,6 @@ map <leader>cfP :!echo "%:p" \| pbcopy<CR><CR>
 
 " Remove highlight
 map <leader>nh :nohlsearch<CR>
-
-" puts the caller
-nnoremap <leader>wtf oputs "#" * 90<c-m>puts caller<c-m>puts "#" * 90<esc>
 
 " Ctrl backspace deletes word
 inoremap <C-BS> <C-w>
@@ -409,10 +405,6 @@ let g:UltiSnipsSnippetDirectories = ['~/.config/nvim/UltiSnips', 'UltiSnips']
 
 " Merginal
 noremap <leader>m :Merginal<CR>
-
-" Webdev icons
-let g:WebDevIconsUnicodeDecorateFolderNodes = 1
-let g:DevIconsEnableFoldersOpenClose = 1
 
 " Easy motion
 map <Leader> <Plug>(easymotion-prefix)
