@@ -1,7 +1,7 @@
 let g:loaded_netrwPlugin = 1
 let g:vimfiler_tree_leaf_icon = ""
-let g:vimfiler_tree_opened_icon = "▼"
-let g:vimfiler_tree_closed_icon = "▷"
+let g:vimfiler_tree_opened_icon = "↳ "
+let g:vimfiler_tree_closed_icon = " "
 let g:vimfiler_as_default_explorer = 1
 let g:vimfiler_window_width = 40
 let g:vimfiler_ignore_pattern = ['^\.git$', '^\.DS_Store$', '^\.']
@@ -46,7 +46,6 @@ augroup ps_vimfiler
   autocmd FileType vimfiler nunmap <buffer> h
   autocmd FileType vimfiler nunmap <buffer> l
   autocmd FileType vimfiler nunmap <buffer> H
-  autocmd Filetype vimfiler map H <Plug>(vimfiler_toggle_visible_ignore_files)
   autocmd FileType vimfiler nmap <silent><buffer><expr> <CR> vimfiler#smart_cursor_map(
   \ "\<Plug>(vimfiler_expand_tree)",
   \ "\<Plug>(vimfiler_edit_file)")

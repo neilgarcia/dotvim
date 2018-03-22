@@ -1,78 +1,80 @@
 call plug#begin('~/.vim/plugged')
-  scriptencoding utf-8
+scriptencoding utf-8
 
-  " Theme
-  " Get object name for syntax highlighting
-  " echom synIDattr(synID(line('.'),col('.'),0),'name')
-  Plug 'rakr/vim-one'
+" Theme
+" Get object name for syntax highlighting
+" echom synIDattr(synID(line('.'),col('.'),0),'name')
+Plug 'joshdick/onedark.vim'
 
-  " Auto completion
-  if has('nvim')
-    Plug 'roxma/nvim-completion-manager', {'do': 'npm install'}
-    Plug 'roxma/ncm-rct-complete'
-    Plug 'roxma/nvim-cm-tern', {'do': 'npm install'}
-    " Neovim completion manager
-    let g:endwise_no_mappings = 1
-    imap <C-X><CR>   <CR><Plug>AlwaysEnd
-    imap <expr> <CR> (pumvisible() ? "\<C-Y>\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd")
-  endif
+" Auto completion
+if has('nvim')
+  Plug 'roxma/nvim-completion-manager', {'do': 'npm install'}
+  Plug 'roxma/ncm-rct-complete'
+  Plug 'roxma/nvim-cm-tern', {'do': 'npm install'}
+  " Neovim completion manager
+  let g:endwise_no_mappings = 1
+  imap <C-X><CR>   <CR><Plug>AlwaysEnd
+  imap <expr> <CR> (pumvisible() ? "\<C-Y>\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd")
+endif
 
-  " Autocomplete
-  Plug 'SirVer/ultisnips'
-  Plug 'honza/vim-snippets'
-  Plug 'othree/csscomplete.vim'
+" Autocomplete
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+Plug 'othree/csscomplete.vim'
 
-  " FZF
-  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-  Plug 'junegunn/fzf.vim'
-  Plug 'romainl/vim-qf'
+" FZF
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'romainl/vim-qf'
 
-  " Tests
-  Plug 'janko-m/vim-test'
-  Plug 'kassio/neoterm'
+" Tests
+Plug 'janko-m/vim-test'
+Plug 'kassio/neoterm'
 
-  " File explorer
-  Plug 'Shougo/unite.vim'
-  Plug 'Shougo/vimfiler.vim'
+" File explorer
+Plug 'Shougo/unite.vim'
+Plug 'Shougo/vimfiler.vim'
 
-  " Tag generation
-  Plug 'ludovicchabant/vim-gutentags'
+" Tag generation
+Plug 'ludovicchabant/vim-gutentags'
 
-  " Linting
-  Plug 'w0rp/ale'
+" Linting
+Plug 'w0rp/ale'
 
-  " Git
-  Plug 'tpope/vim-fugitive'
+" Git
+Plug 'tpope/vim-fugitive'
 
-  "Language specific
-  Plug 'vim-ruby/vim-ruby'
-  Plug 'slim-template/vim-slim'
-  Plug 'tpope/vim-rails'
-  Plug 'pangloss/vim-javascript'
-  Plug 'mxw/vim-jsx'
-  Plug 'MaxMEllon/vim-jsx-pretty'
+"Language specific
+Plug 'vim-ruby/vim-ruby'
+Plug 'slim-template/vim-slim'
+Plug 'tpope/vim-rails'
+Plug 'epilande/vim-react-snippets'
+Plug 'othree/html5.vim'
+Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
 
-  " Text object
-  Plug 'kana/vim-textobj-function'
-  Plug 'thinca/vim-textobj-function-javascript'
-  Plug 'kana/vim-textobj-user'
-  Plug 'nelstrom/vim-textobj-rubyblock'
-  Plug 'wellle/targets.vim'
+" Text object
+Plug 'kana/vim-textobj-function'
+Plug 'thinca/vim-textobj-function-javascript'
+Plug 'kana/vim-textobj-user'
+Plug 'nelstrom/vim-textobj-rubyblock'
+Plug 'wellle/targets.vim'
 
-  " Extras
-  Plug 'tpope/vim-repeat'
-  Plug 'tpope/tpope-vim-abolish'
-  Plug 'tpope/vim-commentary'
-  Plug 'mhinz/vim-startify'
-  Plug 'tpope/vim-endwise'
-  Plug 'mhinz/vim-grepper'
-  Plug 'tpope/vim-surround'
-  Plug 'ntpeters/vim-better-whitespace'
-  Plug 'easymotion/vim-easymotion'
-  Plug 'mhinz/vim-sayonara'
-  Plug 'junegunn/vim-easy-align'
-  Plug 'Konfekt/FastFold'
-  Plug 'AndrewRadev/linediff.vim'
+" Extras
+Plug 'tpope/vim-repeat'
+Plug 'tpope/tpope-vim-abolish'
+Plug 'tpope/vim-commentary'
+Plug 'mhinz/vim-startify'
+Plug 'tpope/vim-endwise'
+Plug 'mhinz/vim-grepper'
+Plug 'tpope/vim-surround'
+Plug 'ntpeters/vim-better-whitespace'
+Plug 'easymotion/vim-easymotion'
+Plug 'mhinz/vim-sayonara'
+Plug 'junegunn/vim-easy-align'
+Plug 'Konfekt/FastFold'
+Plug 'AndrewRadev/linediff.vim'
+Plug 'ckarnell/history-traverse'
 
 
 call plug#end()
@@ -83,11 +85,11 @@ let g:os = substitute(system('uname'), '\n', '', '')
 
 " Set python path
 if g:os == "Darwin"
-  let g:python_host_prog  = '/usr/local/bin/python'
-  let g:python3_host_prog = '/usr/local/bin/python3'
+let g:python_host_prog  = '/usr/local/bin/python'
+let g:python3_host_prog = '/usr/local/bin/python3'
 elseif g:os == "Linux"
-  let g:python_host_prog  = '/usr/bin/python'
-  let g:python3_host_prog = '/usr/bin/python3'
+let g:python_host_prog  = '/usr/bin/python'
+let g:python3_host_prog = '/usr/bin/python3'
 endif
 
 let g:mapleader      = ' '
@@ -106,6 +108,7 @@ map <leader>so :source $MYVIMRC<CR>
 " Basic Configs
 set hidden
 set number            " Show line number
+set relativenumber
 set ruler
 set cursorline
 set cursorcolumn
@@ -117,8 +120,8 @@ set timeoutlen=500    " Dont wait too long for the next key press (useful for am
 ""
 
 if has('persistent_undo')
- set undodir=~/.undodir/
- set undofile
+set undodir=~/.undodir/
+set undofile
 endif
 
 ""
@@ -170,16 +173,17 @@ set tags=./tags,tags;/
 "" Au Group
 ""
 augroup autocommands
-    autocmd!
-    autocmd BufFilePost Merginal:* setlocal relativenumber
-    " autocmd BufEnter * EnableStripWhitespaceOnSave " strip whitespace on save
-    autocmd! FileType fzf tnoremap <buffer> <Esc> <c-c>
-    autocmd FileType gitcommit noremap <buffer> d :call GStatusTabDiff()<CR>
-    autocmd BufWinEnter * if empty(expand('<afile>'))|call fugitive#detect(getcwd())|endif
-    " autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-    autocmd BufNewFile,BufRead *.jsx set filetype=javascript
-    autocmd FocusGained,BufEnter * :silent! !
-    autocmd FileType qf noremap <Esc> :cclose<CR>
+  autocmd!
+  autocmd BufFilePost Merginal:* setlocal relativenumber
+  " autocmd BufEnter * EnableStripWhitespaceOnSave " strip whitespace on save
+  autocmd! FileType fzf tnoremap <buffer> <Esc> <c-c>
+  autocmd FileType gitcommit noremap <buffer> d :call GStatusTabDiff()<CR>
+  autocmd BufWinEnter * if empty(expand('<afile>'))|call fugitive#detect(getcwd())|endif
+  " autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+  " autocmd BufNewFile,BufRead *.jsx set filetype=javascript
+  autocmd BufNewFile,BufRead *.js  set filetype=javascript.jsx
+  autocmd FocusGained,BufEnter * :silent! !
+  autocmd FileType qf noremap <Esc> :cclose<CR>
 augroup END
 
 ""
@@ -194,8 +198,8 @@ nnoremap <tab>   <c-w>w
 nnoremap <S-tab> <c-w>W
 
 if (exists('+colorcolumn'))
-  set colorcolumn=80
-  highlight ColorColumn ctermbg=1
+set colorcolumn=80
+highlight ColorColumn ctermbg=1
 endif
 
 " Close tab
@@ -255,7 +259,7 @@ if (has('termguicolors'))
 endif
 
 set background=dark           " Enable dark background
-colorscheme one " Set the colorscheme
+colorscheme onedark "Set the colorscheme
 syntax sync minlines=200
 set foldmethod=manual
 
@@ -381,7 +385,7 @@ if has('nvim')
   " run tests with :T
   let test#strategy = 'neoterm'
 
-  let g:neoterm_position = 'vertical'
+  let g:neoterm_default_mod = 'vertical'
 
   " pretty much essential: by default in terminal mode, you have to press ctrl-\-n to get into normal mode
   " ain't nobody got time for that
@@ -412,7 +416,8 @@ map <Leader> <Plug>(easymotion-prefix)
 
 " " Gutentags
 let g:gutentags_define_advanced_commands = 1
-nmap <C-]> g<C-]>
+nnoremap <C-]> g<C-]>
+nnoremap g<C-]> <C-]>
 
 
 " Easy Align
