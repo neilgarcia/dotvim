@@ -1,6 +1,6 @@
 " Find imported path
 setlocal path=.,src,node_nodules,app/client
-setlocal suffixesadd=.js,.jsx
+setlocal suffixesadd=.js,.jsx,.scss
 setlocal tags=./jstags/tags;
 
 function! LoadMainNodeModule(fname)

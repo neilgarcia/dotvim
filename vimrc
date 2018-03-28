@@ -20,6 +20,7 @@ endif
 " Autocomplete
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
+Plug 'neilgarcia/vim-react-snippets'
 Plug 'othree/csscomplete.vim'
 
 " FZF
@@ -48,8 +49,6 @@ Plug 'tpope/vim-fugitive'
 Plug 'vim-ruby/vim-ruby'
 Plug 'slim-template/vim-slim'
 Plug 'tpope/vim-rails'
-Plug 'epilande/vim-react-snippets'
-Plug 'othree/html5.vim'
 Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
 
@@ -75,6 +74,7 @@ Plug 'junegunn/vim-easy-align'
 Plug 'Konfekt/FastFold'
 Plug 'AndrewRadev/linediff.vim'
 Plug 'ckarnell/history-traverse'
+Plug 'terryma/vim-multiple-cursors'
 
 
 call plug#end()
@@ -97,7 +97,6 @@ let g:maplocalleader = ' '
 noremap , <Space>
 
 syntax on
-filetype plugin on
 filetype plugin indent on
 
 " Edit and source vimrc
