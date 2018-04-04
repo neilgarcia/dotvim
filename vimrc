@@ -33,8 +33,7 @@ Plug 'janko-m/vim-test'
 Plug 'kassio/neoterm'
 
 " File explorer
-Plug 'Shougo/unite.vim'
-Plug 'Shougo/vimfiler.vim'
+Plug 'scrooloose/nerdtree'
 
 " Tag generation
 Plug 'ludovicchabant/vim-gutentags'
@@ -173,12 +172,11 @@ set tags=./tags,tags;/
 ""
 augroup autocommands
   autocmd!
-  autocmd BufFilePost Merginal:* setlocal relativenumber
   " autocmd BufEnter * EnableStripWhitespaceOnSave " strip whitespace on save
   autocmd! FileType fzf tnoremap <buffer> <Esc> <c-c>
   autocmd FileType gitcommit noremap <buffer> d :call GStatusTabDiff()<CR>
   autocmd BufWinEnter * if empty(expand('<afile>'))|call fugitive#detect(getcwd())|endif
-  " autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+  autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
   " autocmd BufNewFile,BufRead *.jsx set filetype=javascript
   autocmd BufNewFile,BufRead *.js  set filetype=javascript.jsx
   autocmd FocusGained,BufEnter * :silent! !
@@ -290,9 +288,10 @@ map <leader>a :GrepperRg<Space>
 nmap <leader>qf <Plug>QfCtoggle
 let g:qf_mapping_ack_style = 1
 
-" " Nerdtree
-" map <silent> <leader>e :NERDTreeFind<CR>
-" map <silent> <leader>t :NERDTreeToggle<CR>
+" Nerdtree
+nnoremap <silent> <leader>e :NERDTreeFind<CR>
+nnoremap <silent> <leader>t :NERDTreeToggle<CR>
+let NERDTreeMapOpenVSplit = 'v'
 
 " Close buffer
 map <leader>q :Sayonara!<CR>
