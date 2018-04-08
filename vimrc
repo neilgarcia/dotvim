@@ -43,6 +43,7 @@ Plug 'w0rp/ale'
 
 " Git
 Plug 'tpope/vim-fugitive'
+Plug 'junegunn/gv.vim'
 
 "Language specific
 Plug 'vim-ruby/vim-ruby'
