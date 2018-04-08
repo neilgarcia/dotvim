@@ -80,15 +80,18 @@ call plug#end()
 
 " OS Specific commands
 let g:os = substitute(system('uname'), '\n', '', '')
-let g:os = substitute(system('uname'), '\n', '', '')
 
 " Set python path
 if g:os == "Darwin"
-let g:python_host_prog  = '/usr/local/bin/python'
-let g:python3_host_prog = '/usr/local/bin/python3'
+  let g:python_host_prog  = '/usr/local/bin/python'
+  let g:python3_host_prog = '/usr/local/bin/python3'
+  nnoremap <leader>cfp :!echo "%" \| pbcopy<CR><CR>
+  nnoremap <leader>cfP :!echo "%:p" \| pbcopy<CR><CR>
 elseif g:os == "Linux"
-let g:python_host_prog  = '/usr/bin/python'
-let g:python3_host_prog = '/usr/bin/python3'
+  let g:python_host_prog  = '/usr/bin/python'
+  let g:python3_host_prog = '/usr/bin/python3'
+  nnoremap <leader>cfp :let @+ = expand("%")<CR>
+  nnoremap <leader>cfP :let @+ = expand("%:p")<CR>
 endif
 
 let g:mapleader      = ' '
@@ -231,8 +234,6 @@ inoremap <silent> <C-S>         <C-O>:update<CR>
 
 " Copy file path easily for unit testing
 set clipboard=unnamedplus
-map <leader>cfp :!echo "%" \| pbcopy<CR><CR>
-map <leader>cfP :!echo "%:p" \| pbcopy<CR><CR>
 
 " Remove highlight
 map <leader>nh :nohlsearch<CR>
